@@ -26,6 +26,8 @@ public class Client {
 
         Setup();
         
+        
+        
     }
 
     public static void Setup() {

@@ -37,7 +37,7 @@ public class Server {
             byte[] buf = publishMessage.getBytes();
 
             send(buf);
-
+            
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

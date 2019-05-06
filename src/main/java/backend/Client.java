@@ -1,33 +1,53 @@
 
+import backend.MessagePacket;
+import backend.RequestPacket;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Random;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author asuit
  */
 public class Client {
-    
+
     static InetAddress group = null;
     static MulticastSocket ds = null;
     static final int port = 2704;
-    
-    
-    public static void main(String[] args) {
+    static String id;
+    static InetAddress ip = null;
 
-        Setup();
-        
-        
-        
+    public Client() {
+        try {
+            //assign a random name
+            String format = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder sb = new StringBuilder();
+            Random r = new Random();
+            while (sb.length() < 18) { // length of the random string.
+                int index = (int) (r.nextFloat() * format.length());
+                sb.append(format.charAt(index));
+            }
+
+            //set ip and id
+            ip = InetAddress.getLocalHost();
+            id = sb.toString();
+
+            //start connection
+            Setup();
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     public static void Setup() {
@@ -41,7 +61,6 @@ public class Client {
             group = InetAddress.getByName("225.0.0.0");
             ds.joinGroup(group);
 
-
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
@@ -52,6 +71,44 @@ public class Client {
         try {
             DatagramPacket outgoingPacket
                     = new DatagramPacket(outputMessage, outputMessage.length, group, port);
+
+            //send packets
+            ds.send(outgoingPacket);
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    public static void sendMessage(byte[] outputMessage) {
+
+        try {
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("EST"));
+
+            MessagePacket msg = new MessagePacket(id, outputMessage, now);
+
+            //send formatted message (SendMessage)
+            DatagramPacket outgoingPacket
+                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), group, port);
+
+            //send packets
+            ds.send(outgoingPacket);
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    public static void sendRequest(byte[] outputMessage) {
+
+        try {
+
+            RequestPacket msg = new RequestPacket(ip);
+
+            DatagramPacket outgoingPacket
+                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), group, port);
 
             //send packets
             ds.send(outgoingPacket);

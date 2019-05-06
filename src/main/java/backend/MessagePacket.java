@@ -8,11 +8,9 @@ import java.time.LocalDateTime;
  *
  * @author asuit
  */
-
 //This packet is meant for the client and server
 //it will hold the foramtting for message packets
 //and allow information to be accessed easily
-
 public class MessagePacket {
     //
     //OPCODES
@@ -21,30 +19,29 @@ public class MessagePacket {
     //Format
     //Message Packet
     //opcode + ID + Message + Time
-    
+
     private String userID;
     private String messageString;
+    private String sendMsgString;
     private LocalDateTime time;
     private byte[] messageBytes;
     private byte[] idBytes;
     private byte[] timeBytes;
     private byte[] sendMsg;
-    
-    
-    public MessagePacket(String id, byte[] msg,LocalDateTime t){
+
+    public MessagePacket(String id, byte[] msg, LocalDateTime t) {
         userID = id;
         idBytes = userID.getBytes();
-              
+
         messageBytes = msg;
         messageString = new String(messageBytes);
-        
-        time =t;   
+
+        time = t;
         timeBytes = time.toString().getBytes();
-        
-        
+
         byte[] opCode = {0, 2};
-        
-        try{
+
+        try {
             //concatenate byte arrays to create outgoing message
             //which will be in our format
             ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -56,21 +53,23 @@ public class MessagePacket {
             //this will be the message we send out
             //fully formatted
             sendMsg = os.toByteArray();
-        
-        }catch(IOException e){
+
+            sendMsgString = new String(sendMsg);
+
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        
+
     }
-    
-    public byte[] getMsgBytes() {
+
+    public byte[] getOriginalMsgBytes() {
         return this.messageBytes;
     }
 
     public byte[] getSendMessage() {
         return this.sendMsg;
     }
-    
+
     public String getID() {
         return this.userID;
     }
@@ -82,9 +81,9 @@ public class MessagePacket {
     public int getMsgLength() {
         return messageString.length();
     }
-    
-   
-    
-    
-    
+
+    public int getSendMsgLength() {
+        return sendMsgString.length();
+    }
+
 }

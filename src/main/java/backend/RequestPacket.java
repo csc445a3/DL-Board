@@ -30,6 +30,7 @@ public class RequestPacket {
     private byte[] ipBytes;
     private String sendMsgString;
 
+    //constructor for client
     public RequestPacket(InetAddress clientIP) {
 
         ip = clientIP;
@@ -54,7 +55,7 @@ public class RequestPacket {
         }
 
     }
-
+    
     public byte[] getMessageBytes() {
         return this.sendMsg;
     }

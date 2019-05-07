@@ -1,9 +1,14 @@
 
+import static Client.ip;
+import backend.RequestPacket;
+import backend.UpdatePacket;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  *
@@ -15,7 +20,8 @@ public class Server {
     static MulticastSocket ds = null;
     static final int port = 2704;
 
-    public static void main(String[] args) {
+    
+    public Server() {
         
         Setup();
         
@@ -57,6 +63,27 @@ public class Server {
         }
 
     }
+    
+    public static void sendUpdate(byte[] outputMessage,InetAddress ip) {
+        //How do we send multiple messages?
+       //ip is to send to a specific client
+       //get it from the requestpacket the client sends to the server
+        
+        try {
+
+            UpdatePacket updMsg = new UpdatePacket(outputMessage);
+
+            DatagramPacket outgoingPacket
+                    = new DatagramPacket(updMsg.getSendMessage(), updMsg.getSendMsgLength(), ip, port);
+
+            //send packets
+            ds.send(outgoingPacket);
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
 
     public static DatagramPacket recieve(DatagramSocket ds) {
         try {
@@ -66,12 +93,58 @@ public class Server {
                     = new DatagramPacket(buf, buf.length);
 
             ds.receive(incomingPacket);
-
+            
+            //send to processing
+            processPacket(incomingPacket);
+            
             return incomingPacket;
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
         return null;
+    }
+    
+    public static void processPacket(DatagramPacket p){
+        byte[] incomingBytes;
+        incomingBytes = Arrays.copyOfRange(p.getData(), 0, p.getLength());
+        
+        //take the first two bytes of the incoming packet, which should be the opcode
+        byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 1);
+        
+        if(opcode[0] == 0 && opcode[1] == 1){
+            //this is the opcode for 
+            //a requestpacket from client to server
+            //
+            //the rest of the message should be an ip
+            
+            try{
+                byte[] clientIP = Arrays.copyOfRange(incomingBytes, 1, incomingBytes.length);
+
+                InetAddress ip = InetAddress.getByAddress(clientIP);
+            
+                //after finding the ip create a RequestPacket so we can get info from it
+                RequestPacket rp = new RequestPacket(ip);
+                
+                //What now?
+                //Send requestPacket to a database method
+                //That then calls the sendPacket method?
+                
+                
+            }   catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+            
+
+        }else if(opcode[0] == 0 && opcode[1] == 2){
+            //this is the opcode for
+            //a messagepacket from client to other clients, processed by the server
+            
+        }
+        
+        //Do nothing if opcode is something else
+        //probably should never be anything else
+        
+        
     }
 
 }

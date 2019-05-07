@@ -30,6 +30,7 @@ public class UpdatePacket {
     
     private byte[] updateMessage;
     private byte[] sendMsg;
+    private String sendMsgString;
 
     public UpdatePacket(byte[] updateMessage) {
 
@@ -47,6 +48,8 @@ public class UpdatePacket {
             //fully formatted
             sendMsg = os.toByteArray();
 
+            sendMsgString = new String(sendMsg);
+            
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -56,6 +59,9 @@ public class UpdatePacket {
     public byte[] getSendMessage() {
         return this.sendMsg;
     }
-
+    
+    public int getSendMsgLength() {
+        return sendMsgString.length();
+    }
  
 }

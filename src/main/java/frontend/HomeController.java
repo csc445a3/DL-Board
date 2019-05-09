@@ -139,7 +139,7 @@ public class HomeController implements Initializable {
     }
 
     private void updateScrollPaneAnchors() {
-        setTopAnchor(scrollPane, 50 + getScrollPaneLocation());
+        setTopAnchor(scrollPane, 65 + getScrollPaneLocation());
     }
 
 }

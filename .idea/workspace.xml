@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a0fd4137-3698-4fe1-a3aa-c01153667f65" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/java/frontend/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frontend/HomeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/frontend/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frontend/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/home.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/home.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/writePost.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/writePost.fxml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -46,14 +46,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="fxml" value="15" />
-          <entry key="java" value="733" />
+          <entry key="java" value="740" />
           <entry key="xml" value="33" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSS" value="2" />
-          <entry key="JAVA" value="731" />
+          <entry key="JAVA" value="738" />
           <entry key="XML" value="48" />
         </counts>
       </usages-collector>
@@ -111,8 +111,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/frontend/HomeController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="121" column="35" selection-start-line="121" selection-start-column="35" selection-end-line="121" selection-end-column="35" />
+            <state relative-caret-position="236">
+              <caret line="141" column="35" selection-start-line="141" selection-start-column="35" selection-end-line="141" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3326#3327#0" expanded="true" />
@@ -196,8 +196,8 @@
         <option value="$PROJECT_DIR$/src/main/resources/dl-board.css" />
         <option value="$PROJECT_DIR$/src/main/java/frontend/Main.java" />
         <option value="$PROJECT_DIR$/src/main/resources/writePost.fxml" />
-        <option value="$PROJECT_DIR$/src/main/java/frontend/HomeController.java" />
         <option value="$PROJECT_DIR$/src/main/java/frontend/WritePostController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/frontend/HomeController.java" />
       </list>
     </option>
   </component>
@@ -301,7 +301,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557431149625" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557432462541" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -355,12 +355,12 @@
       <workItem from="1556127498859" duration="4870000" />
       <workItem from="1556288033064" duration="494000" />
       <workItem from="1556395013853" duration="57000" />
-      <workItem from="1557327419860" duration="8112000" />
+      <workItem from="1557327419860" duration="9445000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13533000" />
+    <option name="totallyTimeSpent" value="14866000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="837" extended-state="6" />
@@ -486,8 +486,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/frontend/HomeController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="121" column="35" selection-start-line="121" selection-start-column="35" selection-end-line="121" selection-end-column="35" />
+        <state relative-caret-position="236">
+          <caret line="141" column="35" selection-start-line="141" selection-start-column="35" selection-end-line="141" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3326#3327#0" expanded="true" />

@@ -60,7 +60,7 @@
                   </StackPane>
                </content>
             </ScrollPane>
-            <JFXDrawer fx:id="writePostDrawer" defaultDrawerSize="200.0" direction="TOP" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="1000.0" />
+            <JFXDrawer fx:id="writePostDrawer" defaultDrawerSize="200.0" direction="TOP" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="1000.0" />
             <GridPane fx:id="topBarGridPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="1000.0" scaleShape="false" style="-fx-background-color: #27ae60;">
                <columnConstraints>
                   <ColumnConstraints fx:id="gridPaneLeft" halignment="LEFT" hgrow="ALWAYS" maxWidth="307.33331298828125" minWidth="10.0" prefWidth="304.6666564941406" />

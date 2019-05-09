@@ -1,5 +1,5 @@
 
-import static Client.ip;
+//import static Client.ip; ???
 import backend.RequestPacket;
 import backend.UpdatePacket;
 import java.io.IOException;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXDrawer?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ScrollPane?>
@@ -30,12 +31,12 @@
                                  <children>
                                     <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 20;">
                                        <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Anon says:">
+                                          <Text fill="#2d3436" strokeType="OUTSIDE" strokeWidth="0.0" text="Anon says:">
                                              <font>
                                                 <Font name="Helvetica Neue Bold" size="15.0" />
                                              </font>
                                           </Text>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="This class rules!!!">
+                                          <Text fill="#2d3436" strokeType="OUTSIDE" strokeWidth="0.0" text="This class rules!!!">
                                              <font>
                                                 <Font name="Helvetica Neue" size="13.0" />
                                              </font>
@@ -59,6 +60,7 @@
                   </StackPane>
                </content>
             </ScrollPane>
+            <JFXDrawer fx:id="writePostDrawer" defaultDrawerSize="200.0" direction="TOP" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="1000.0" />
             <GridPane fx:id="topBarGridPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="1000.0" scaleShape="false" style="-fx-background-color: #27ae60;">
                <columnConstraints>
                   <ColumnConstraints fx:id="gridPaneLeft" halignment="LEFT" hgrow="ALWAYS" maxWidth="307.33331298828125" minWidth="10.0" prefWidth="304.6666564941406" />
@@ -80,7 +82,7 @@
                         <Image url="@dl-board-dark-gray-logo.png" />
                      </image>
                      <effect>
-                        <DropShadow color="#7aeb9c3f" height="50.0" radius="24.5" spread="0.4" width="50.0" />
+                        <DropShadow color="#7aeb9c59" height="50.0" radius="24.5" spread="0.4" width="50.0" />
                      </effect>
                   </ImageView>
                   <StackPane fx:id="writePostButton" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #27ae60; -fx-background-radius: 1000;">

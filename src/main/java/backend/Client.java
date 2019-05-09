@@ -33,7 +33,7 @@ public class Client {
             String format = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             StringBuilder sb = new StringBuilder();
             Random r = new Random();
-            while (sb.length() < 18) { // length of the random string.
+            while (sb.length() < 12) { // length of the random string
                 int index = (int) (r.nextFloat() * format.length());
                 sb.append(format.charAt(index));
             }
@@ -84,7 +84,7 @@ public class Client {
     public static void sendMessage(byte[] outputMessage) {
 
         try {
-            LocalDateTime now = LocalDateTime.now(ZoneId.of("EST"));
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("America/New_York"));
 
             MessagePacket msg = new MessagePacket(id, outputMessage, now);
 

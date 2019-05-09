@@ -1,5 +1,5 @@
 
-//import static Client.ip; ???
+import backend.MessagePacket;
 import backend.RequestPacket;
 import backend.UpdatePacket;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  *
@@ -131,6 +131,7 @@ public class Server {
                 
                 
             }   catch (IOException ex) {
+                System.out.println("Error in processing requestpacket");
                 System.out.println(ex.getMessage());
             }
             
@@ -138,6 +139,40 @@ public class Server {
         }else if(opcode[0] == 0 && opcode[1] == 2){
             //this is the opcode for
             //a messagepacket from client to other clients, processed by the server
+            
+            try{
+                //how many bytes does the IP Store as?
+                byte[] clientIP = Arrays.copyOfRange(incomingBytes, 1, 2);
+
+                InetAddress ip = InetAddress.getByAddress(clientIP);
+                
+                //ID is 12 bytes long
+                byte[] clientID = Arrays.copyOfRange(incomingBytes,2, 14);
+                String id = new String(clientID);
+                
+                byte[] clientMSG = Arrays.copyOfRange(incomingBytes, 14, incomingBytes.length - 23);
+                
+                
+                //Time is 23 Bytes long
+                byte[] clientTime = Arrays.copyOfRange(incomingBytes,incomingBytes.length - 23, incomingBytes.length);
+                String stringTime = new String(clientTime);
+                LocalDateTime time = LocalDateTime.parse(stringTime);
+                
+                
+                //Create the message packet
+                MessagePacket mp = new MessagePacket(id,clientMSG, time);
+                
+                
+                //What now?
+                //Send messagePacket to a database method?
+                
+                
+            }   catch (IOException ex) {
+                System.out.println("Error in processing messagepacket");
+                System.out.println(ex.getMessage());
+            }
+            
+            
             
         }
         

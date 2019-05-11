@@ -4,7 +4,7 @@
 *.properties
 
 ##To ignore intellij files
-*.idea
+.idea/
 *.iml
 
 ##To ignore mac files

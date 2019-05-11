@@ -1,1 +1,12 @@
 /target/
+
+##To ignore the db properties
+*.properties
+
+##To ignore intellij files
+*.idea
+*.iml
+
+##To ignore mac files
+*.DS_Store
+

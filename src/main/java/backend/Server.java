@@ -5,7 +5,6 @@ import backend.RequestPacket;
 import backend.UpdatePacket;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.time.LocalDateTime;
@@ -86,7 +85,7 @@ public class Server {
 
     }
 
-    public static DatagramPacket recieve(DatagramSocket ds) {
+    public static DatagramPacket recieve() {
         try {
 
             byte[] buf = new byte[64000];

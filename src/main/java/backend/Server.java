@@ -3,9 +3,6 @@ package backend;
 import backend.MessagePacket;
 import backend.RequestPacket;
 import backend.UpdatePacket;
-import database.MessageDao;
-import database.UserDao;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -17,11 +14,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-<<<<<<< HEAD
-import java.util.List;
-=======
 import javax.crypto.Cipher;
->>>>>>> 4fca0267e0fbd031d446a2f880918404d91a9bd7
 
 /**
  *
@@ -32,13 +25,6 @@ public class Server {
     static InetAddress group = null;
     static MulticastSocket ms = null;
     static final int port = 2704;
-<<<<<<< HEAD
-    private MessageDao messageDao = new MessageDao();
-    private UserDao userDao = new UserDao();
-
-    
-    public Server() {
-=======
     static private PrivateKey privateKey;
     static private PublicKey publicKey;
 
@@ -52,8 +38,7 @@ public class Server {
         KeyPair keyPair = kg.generateKeyPair();
         this.publicKey = keyPair.getPublic();
         this.privateKey = keyPair.getPrivate();
->>>>>>> 4fca0267e0fbd031d446a2f880918404d91a9bd7
-        
+
         Setup();
 
     }
@@ -79,7 +64,7 @@ public class Server {
         try {
             //encrypt the message using RSA
             byte[] outMsg = encrypt(privateKey, outputMessage);
-            
+
             DatagramPacket outgoingPacket
                     = new DatagramPacket(outMsg, outMsg.length, group, port);
 
@@ -100,10 +85,10 @@ public class Server {
         try {
 
             UpdatePacket updMsg = new UpdatePacket(outputMessage);
-            
+
             //encrypt the message using RSA
             byte[] updateMsg = encrypt(privateKey, updMsg.getSendMessage());
-            
+
             DatagramPacket outgoingPacket
                     = new DatagramPacket(updateMsg, updateMsg.length, ip, port);
 
@@ -124,7 +109,7 @@ public class Server {
                     = new DatagramPacket(buf, buf.length);
 
             ms.receive(incomingPacket);
-            
+
             //send to processing
             processPacket(incomingPacket);
 
@@ -144,7 +129,7 @@ public class Server {
         byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 1);
 
         if (opcode[0] == 0 && opcode[1] == 1) {
-            //this is the opcode for 
+            //this is the opcode for
             //a requestpacket from client to server
             //
             //the rest of the message should be an ip
@@ -191,15 +176,7 @@ public class Server {
 
                 //What now?
                 //Send messagePacket to a database method?
-<<<<<<< HEAD
-                //method to add to db is below it will need an int for the userID, and the actual message as a String
-
-                
-                
-            }   catch (IOException ex) {
-=======
             } catch (IOException ex) {
->>>>>>> 4fca0267e0fbd031d446a2f880918404d91a9bd7
                 System.out.println("Error in processing messagepacket");
                 System.out.println(ex.getMessage());
             }
@@ -208,43 +185,6 @@ public class Server {
 
         //Do nothing if opcode is something else
         //probably should never be anything else
-<<<<<<< HEAD
-
-    }
-
-    /**
-     * Writes the message to the db
-     * @param message the actual message as a string from the packet
-     * @param userID the userID of the user that wrote the message, as an int
-     *               this should be extracted from the packet as well.
-     */
-    private void writeMessage(String message, int userID){
-
-        messageDao.addMessage(userID, message);
-
-    }
-
-    private void writeUser(String userName) {
-
-        userDao.addUser(userName);
-
-    }
-
-    //private void updateUserName(String userName)
-
-    /**
-     * Gets all messages from the database
-     * Needs changing so that it can get the username with it
-     * Currently it just returns every message.
-     * @return list of all messages w/ no userID attached.
-     */
-    private List<String> getAllMessages(){
-
-        List<String> messages;
-        messages = messageDao.selectAllMessages();
-        return  messages;
-
-=======
     }
 
     public static byte[] encrypt(PrivateKey privateKey, byte[] message) throws Exception {
@@ -259,7 +199,6 @@ public class Server {
         c.init(Cipher.DECRYPT_MODE, publicKey);
 
         return c.doFinal(encrypted);
->>>>>>> 4fca0267e0fbd031d446a2f880918404d91a9bd7
     }
 
 }

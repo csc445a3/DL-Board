@@ -3,6 +3,9 @@ package  backend;
 import backend.MessagePacket;
 import backend.RequestPacket;
 import backend.UpdatePacket;
+import database.MessageDao;
+import database.UserDao;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -10,6 +13,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -20,6 +24,8 @@ public class Server {
     static InetAddress group = null;
     static MulticastSocket ds = null;
     static final int port = 2704;
+    private MessageDao messageDao = new MessageDao();
+    private UserDao userDao = new UserDao();
 
     
     public Server() {
@@ -166,6 +172,8 @@ public class Server {
                 
                 //What now?
                 //Send messagePacket to a database method?
+                //method to add to db is below it will need an int for the userID, and the actual message as a String
+
                 
                 
             }   catch (IOException ex) {
@@ -179,8 +187,41 @@ public class Server {
         
         //Do nothing if opcode is something else
         //probably should never be anything else
-        
-        
+
+    }
+
+    /**
+     * Writes the message to the db
+     * @param message the actual message as a string from the packet
+     * @param userID the userID of the user that wrote the message, as an int
+     *               this should be extracted from the packet as well.
+     */
+    private void writeMessage(String message, int userID){
+
+        messageDao.addMessage(userID, message);
+
+    }
+
+    private void writeUser(String userName) {
+
+        userDao.addUser(userName);
+
+    }
+
+    //private void updateUserName(String userName)
+
+    /**
+     * Gets all messages from the database
+     * Needs changing so that it can get the username with it
+     * Currently it just returns every message.
+     * @return list of all messages w/ no userID attached.
+     */
+    private List<String> getAllMessages(){
+
+        List<String> messages;
+        messages = messageDao.selectAllMessages();
+        return  messages;
+
     }
 
 }

@@ -55,7 +55,7 @@ public class RequestPacket {
         }
 
     }
-    
+
     public byte[] getMessageBytes() {
         return this.sendMsg;
     }

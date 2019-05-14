@@ -23,7 +23,7 @@ import javax.crypto.Cipher;
 public class Server {
 
     static InetAddress group = null;
-    static MulticastSocket ds = null;
+    static MulticastSocket ms = null;
     static final int port = 2704;
     static private PrivateKey privateKey;
     static private PublicKey publicKey;
@@ -47,12 +47,12 @@ public class Server {
         try {
 
             //create a multicast socket
-            ds = new MulticastSocket(port);
+            ms = new MulticastSocket(port);
 
             //create an inetaddress group to join
             //this will be who we send messages to on the network
             group = InetAddress.getByName("225.0.0.0");
-            ds.joinGroup(group);
+            ms.joinGroup(group);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -69,7 +69,7 @@ public class Server {
                     = new DatagramPacket(outMsg, outMsg.length, group, port);
 
             //send packets
-            ds.send(outgoingPacket);
+            ms.send(outgoingPacket);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -93,7 +93,7 @@ public class Server {
                     = new DatagramPacket(updateMsg, updateMsg.length, ip, port);
 
             //send packets
-            ds.send(outgoingPacket);
+            ms.send(outgoingPacket);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -108,7 +108,7 @@ public class Server {
             DatagramPacket incomingPacket
                     = new DatagramPacket(buf, buf.length);
 
-            ds.receive(incomingPacket);
+            ms.receive(incomingPacket);
             
             //send to processing
             processPacket(incomingPacket);

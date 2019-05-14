@@ -3,6 +3,7 @@ import backend.MessagePacket;
 import backend.RequestPacket;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
@@ -28,7 +29,8 @@ import javax.crypto.Cipher;
 public class Client {
 
     static InetAddress group = null;
-    static MulticastSocket ds = null;
+    static MulticastSocket ms = null;
+    static DatagramSocket ds = null;
     static final int port = 2704;
     static String id;
     static InetAddress ip = null;
@@ -72,12 +74,17 @@ public class Client {
         try {
 
             //create a multicast socket
-            ds = new MulticastSocket(port);
+            ms = new MulticastSocket(port);
 
             //create an inetaddress group to join
             //this will be who we send messages to on the network
             group = InetAddress.getByName("225.0.0.0");
-            ds.joinGroup(group);
+            ms.joinGroup(group);
+            
+            
+            //create a datagram socket for communication to the server
+            ds = new DatagramSocket(port);
+            
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -91,7 +98,7 @@ public class Client {
             byte[] outMsg = encrypt(privateKey, outputMessage);
 
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(outputMessage, outputMessage.length, group, port);
+                    = new DatagramPacket(outputMessage, outputMessage.length, ip, port);
 
             //send packets
             ds.send(outgoingPacket);
@@ -114,7 +121,7 @@ public class Client {
 
             //send formatted message (SendMessage)
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(sendMsg, sendMsg.length, group, port);
+                    = new DatagramPacket(sendMsg, sendMsg.length, ip, port);
 
             //send packets
             ds.send(outgoingPacket);
@@ -135,7 +142,7 @@ public class Client {
             byte[] sendMsg = encrypt(privateKey, msg.getSendMessage());
 
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), group, port);
+                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), ip, port);
 
             //send packets
             ds.send(outgoingPacket);
@@ -153,7 +160,7 @@ public class Client {
             DatagramPacket incomingPacket
                     = new DatagramPacket(buf, buf.length);
 
-            ds.receive(incomingPacket);
+            ms.receive(incomingPacket);
 
             //decrypt message
             byte[] recievedMessage = decrypt(publicKey, incomingPacket.getData());
@@ -172,7 +179,7 @@ public class Client {
 
         while (recieving) {
             try {
-                ds.setSoTimeout(10000);
+                ms.setSoTimeout(10000);
                 //add messages to an arraylist
                 recievedMessages.add(recieve());
 

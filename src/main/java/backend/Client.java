@@ -3,18 +3,14 @@ import backend.MessagePacket;
 import backend.RequestPacket;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Cipher;
 
 /*
@@ -30,7 +26,6 @@ public class Client {
 
     static InetAddress group = null;
     static MulticastSocket ms = null;
-    static DatagramSocket ds = null;
     static final int port = 2704;
     static String id;
     static InetAddress ip = null;
@@ -81,9 +76,7 @@ public class Client {
             group = InetAddress.getByName("225.0.0.0");
             ms.joinGroup(group);
             
-            
-            //create a datagram socket for communication to the server
-            ds = new DatagramSocket(port);
+       
             
 
         } catch (IOException ex) {
@@ -98,10 +91,10 @@ public class Client {
             byte[] outMsg = encrypt(privateKey, outputMessage);
 
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(outputMessage, outputMessage.length, ip, port);
+                    = new DatagramPacket(outputMessage, outputMessage.length, group, port);
 
             //send packets
-            ds.send(outgoingPacket);
+            ms.send(outgoingPacket);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -121,10 +114,10 @@ public class Client {
 
             //send formatted message (SendMessage)
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(sendMsg, sendMsg.length, ip, port);
+                    = new DatagramPacket(sendMsg, sendMsg.length, group, port);
 
             //send packets
-            ds.send(outgoingPacket);
+            ms.send(outgoingPacket);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -142,10 +135,10 @@ public class Client {
             byte[] sendMsg = encrypt(privateKey, msg.getSendMessage());
 
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), ip, port);
+                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), group, port);
 
             //send packets
-            ds.send(outgoingPacket);
+            ms.send(outgoingPacket);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());

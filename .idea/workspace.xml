@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0fd4137-3698-4fe1-a3aa-c01153667f65" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/backend/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/backend/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/backend/UpdatePacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/backend/UpdatePacket.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -46,8 +44,8 @@
           <file leaf-file-name="Client.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/backend/Client.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="670">
-                  <caret line="206" column="36" lean-forward="true" selection-start-line="206" selection-start-column="36" selection-end-line="206" selection-end-column="36" />
+                <state relative-caret-position="558">
+                  <caret line="258" column="2" lean-forward="true" selection-start-line="258" selection-start-column="2" selection-end-line="258" selection-end-column="2" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -80,8 +78,8 @@
           <file leaf-file-name="UpdatePacket.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/backend/UpdatePacket.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="362">
-                  <caret line="30" column="30" selection-start-line="30" selection-start-column="30" selection-end-line="30" selection-end-column="45" />
+                <state relative-caret-position="390">
+                  <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
                 </state>
               </provider>
             </entry>
@@ -116,6 +114,7 @@
       <find>up</find>
       <find>update</find>
       <find>delimeter</find>
+      <find>messages</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -749,15 +748,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/backend/UpdatePacket.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="30" column="30" selection-start-line="30" selection-start-column="30" selection-end-line="30" selection-end-column="45" />
+        <state relative-caret-position="390">
+          <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/backend/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="670">
-          <caret line="206" column="36" lean-forward="true" selection-start-line="206" selection-start-column="36" selection-end-line="206" selection-end-column="36" />
+        <state relative-caret-position="558">
+          <caret line="258" column="2" lean-forward="true" selection-start-line="258" selection-start-column="2" selection-end-line="258" selection-end-column="2" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

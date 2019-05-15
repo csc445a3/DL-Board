@@ -11,10 +11,7 @@ import java.nio.ByteBuffer;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 import javax.crypto.Cipher;
 import java.util.stream.Collectors;
 /*
@@ -237,41 +234,48 @@ public static void specialAdd(MessagePacket mp)
 {
     messages.add(mp);
     messages.stream().distinct().sorted(Comparator.comparing(M->M.time)).collect(Collectors.toList());
+    if(messages.size() > 5000)      // if there are more than 5000 messages in working set, just dump and keep 50 newest ones...
+    {
+        List<MessagePacket> messages2 = messages.subList(0,500);
+        messages.clear();
+        messages2.stream().forEach(s->messages.add(s));
+
+    }
 }
 
 
-    public static void recieveUpdate() { //todo fix
-        boolean recieving = true;
-        ArrayList<MessagePacket> recievedMessages = new ArrayList<>();
-
-        while (recieving) {
-            try {
-                ms.setSoTimeout(10000);
-                //add messages to an arraylist
-               //todo uncomment this  recievedMessages.add(recieve());
-
-
-
-
-
-
-
-
-            } catch (SocketException e) {
-                //havent recieved any new updates
-                recieving = false;
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
-
-        }
-
-//        for (byte[] b : recievedMessages) {
-//            String rMsgString = new String(b);        todo fix
-//            messages.add(rMsgString);
+//    public static void recieveUpdate() { //todo fix
+//        boolean recieving = true;
+//        ArrayList<MessagePacket> recievedMessages = new ArrayList<>();
+//
+//        while (recieving) {
+//            try {
+//                ms.setSoTimeout(10000);
+//                //add messages to an arraylist
+//               //todo uncomment this  recievedMessages.add(recieve());
+//
+//
+//
+//
+//
+//
+//
+//
+//            } catch (SocketException e) {
+//                //havent recieved any new updates
+//                recieving = false;
+//            } catch (Exception ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//
 //        }
-
-    }
+//
+////        for (byte[] b : recievedMessages) {
+////            String rMsgString = new String(b);        todo fix
+////            messages.add(rMsgString);
+////        }
+//
+//    }
 
     public PrivateKey getPrivateKey() {
         return privateKey;

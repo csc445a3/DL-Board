@@ -1,5 +1,6 @@
 package backend;
 
+import DataStorage.User;
 import backend.MessagePacket;
 import backend.RequestPacket;
 import backend.UpdatePacket;
@@ -184,6 +185,9 @@ public class Server {
 
                 //What now?
                 //Send messagePacket to a database method?
+                //This "creates" a new user and then stores then stores the message in the users folder
+                User u = new User(id);
+                u.put(new String(clientMSG), id, stringTime);
             } catch (IOException ex) {
                 System.out.println("Error in processing messagepacket");
                 System.out.println(ex.getMessage());
@@ -209,9 +213,9 @@ public class Server {
         return c.doFinal(encrypted);
     }
 
-    public Set getAllMessages(String pathName){
+    public Set getAllMessages(String pathname){
         Set messageList = new HashSet();
-        File dir = new File(pathName);
+        File dir = new File(pathname);
         System.out.println(dir.toPath().toString());
         for(File f : dir.listFiles()){
             if(f.isFile()) {

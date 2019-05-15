@@ -10,12 +10,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <StackPane fx:id="stackPane" cache="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@dl-board.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.HomeController">
    <children>
@@ -26,32 +23,6 @@
                   <StackPane fx:id="bodyStackPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" prefWidth="1000.0">
                      <children>
                         <VBox fx:id="bodyVBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0">
-                           <children>
-                              <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="400.0" style="-fx-background-color: #ecf0f1; -fx-background-radius: 1000; -fx-border-color: #7bed9f; -fx-border-radius: 100; -fx-border-width: 3;">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 20;">
-                                       <children>
-                                          <Text fill="#2d3436" strokeType="OUTSIDE" strokeWidth="0.0" text="Anon says:">
-                                             <font>
-                                                <Font name="Helvetica Neue Bold" size="15.0" />
-                                             </font>
-                                          </Text>
-                                          <Text fill="#2d3436" strokeType="OUTSIDE" strokeWidth="0.0" text="This class rules!!!">
-                                             <font>
-                                                <Font name="Helvetica Neue" size="13.0" />
-                                             </font>
-                                          </Text>
-                                       </children>
-                                       <padding>
-                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                       </padding>
-                                    </HBox>
-                                 </children>
-                                 <effect>
-                                    <DropShadow color="#00000040" height="100.0" radius="49.5" width="100.0" />
-                                 </effect>
-                              </StackPane>
-                           </children>
                            <padding>
                               <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                            </padding>

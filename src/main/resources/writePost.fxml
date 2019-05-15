@@ -26,7 +26,7 @@
                         <Cursor fx:constant="DEFAULT" />
                      </cursor>
                      <children>
-                        <JFXTextField focusColor="#3c8652" labelFloat="true" prefHeight="40.0" prefWidth="170.0" promptText="Name" style="-fx-background-color: #ecf0f1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;" text="Anon" unFocusColor="#4d4d4d00">
+                        <JFXTextField fx:id="nameField" focusColor="#3c8652" labelFloat="true" prefHeight="40.0" prefWidth="170.0" promptText="Name" style="-fx-background-color: #ecf0f1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;" text="Anon" unFocusColor="#4d4d4d00">
                            <effect>
                               <DropShadow color="#0000004d" spread="0.25" />
                            </effect>
@@ -34,7 +34,7 @@
                               <Font name="Helvetica Neue Medium" size="14.0" />
                            </font>
                         </JFXTextField>
-                        <JFXTextField focusColor="#3c8652" labelFloat="true" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="650.0" promptText="Post" style="-fx-background-color: #ecf0f1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;" text=" " unFocusColor="#7bed9f00">
+                        <JFXTextField fx:id="messageField" focusColor="#3c8652" labelFloat="true" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="650.0" promptText="Post" style="-fx-background-color: #ecf0f1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;" text=" " unFocusColor="#7bed9f00">
                            <effect>
                               <DropShadow color="#0000004d" spread="0.25" />
                            </effect>
@@ -52,7 +52,7 @@
                   </HBox>
                </content>
             </ScrollPane>
-            <JFXButton buttonType="RAISED" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="72.0" ripplerFill="#7bed9f" style="-fx-background-color: #e5e9ea; -fx-padding: 5; -fx-background-radius: 25; -fx-border-color: #d4d7d8; -fx-border-radius: 25;" text="Post" textFill="#2d3436">
+            <JFXButton fx:id="postButton" buttonType="RAISED" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="72.0" ripplerFill="#7bed9f" style="-fx-background-color: #e5e9ea; -fx-padding: 5; -fx-background-radius: 25; -fx-border-color: #d4d7d8; -fx-border-radius: 25;" text="Post" textFill="#2d3436">
                <HBox.margin>
                   <Insets right="35.0" />
                </HBox.margin>

@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class WritePostController implements Initializable {
+public class WritePostController {
     @FXML
     public AnchorPane writePostAnchorPane;
     @FXML
@@ -24,8 +24,4 @@ public class WritePostController implements Initializable {
     public JFXButton postButton;
 
     public String name, message;
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-    }
 }

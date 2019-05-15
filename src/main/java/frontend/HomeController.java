@@ -7,6 +7,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,11 +19,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -63,9 +63,23 @@ public class HomeController implements Initializable {
 
     private DoubleProperty scrollPaneLocation = new SimpleDoubleProperty(this, "scrollPaneLocation");
     private WritePostController writePostController;
+    static Stage primaryStage;
+
+    static public void setStage(Stage stage){
+        primaryStage = stage;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                bodyVBox.getChildren().removeAll();
+                Platform.exit();
+                System.exit(0);
+            }
+    });
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("writePost.fxml"));

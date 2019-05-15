@@ -7,13 +7,16 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 import javax.crypto.Cipher;
-
+import java.util.stream.Collectors;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -32,7 +35,7 @@ public class Client {
     static InetAddress ip = null;
     static private PrivateKey privateKey;
     static private PublicKey publicKey;
-    static private ArrayList<String> messages;
+    static private ArrayList<MessagePacket> messages;
 
     public Client() throws NoSuchAlgorithmException {
         try {
@@ -147,7 +150,7 @@ public class Client {
 
     }
 
-    public static byte[] recieve() throws Exception {
+    public static void recieve() throws Exception {
         try {
 
             byte[] buf = new byte[64000];
@@ -155,27 +158,92 @@ public class Client {
                     = new DatagramPacket(buf, buf.length);
 
             ms.receive(incomingPacket);
-
+            processPacket(incomingPacket);
             //decrypt message
-            byte[] recievedMessage = decrypt(publicKey, incomingPacket.getData());
-
-            return recievedMessage;
+//            byte[] recievedMessage = decrypt(publicKey, incomingPacket.getData());
+//
+//            return recievedMessage;
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        return null;
+
+    }
+    public static void processPacket(DatagramPacket p) throws Exception {
+        //decrypt data using RSA
+        byte[] incomingBytes = p.getData();
+        incomingBytes = decrypt(publicKey, incomingBytes);
+
+        //take the first two bytes of the incoming packet, which should be the opcode
+        byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 1);
+
+        if (opcode[0] == 0 && opcode[1] == 1) {
+                //do nothing , request to server
+
+        } else if (opcode[0] == 0 && opcode[1] == 2) {
+           helper(incomingBytes);
+        }
+        else if(opcode[0] == 0 && opcode[1] == 3)
+        {
+          // test  UpdatePacket up = (UpdatePacket)incomingBytes;
+            //todo deal with update
+
+            //todo find if this is right substring this is for testing V
+            byte [] lengthOfArray = Arrays.copyOfRange(incomingBytes,2,5);
+            int len = ByteBuffer.wrap(lengthOfArray).getInt();
+//            for(int i =0; i<len;i++)
+//            {
+//
+//            }
+
+
+        }
+
+        //Do nothing if opcode is something else
+        //probably should never be anything else
     }
 
-    public static void recieveUpdate() {
+    public static void helper(byte []mp)
+    {
+        byte[] clientID = Arrays.copyOfRange(mp, 2, 14);
+        String id = new String(clientID);
+
+        byte[] clientMSG = Arrays.copyOfRange(mp, 14, mp.length - 23);
+
+        //Time is 23 Bytes long
+        byte[] clientTime = Arrays.copyOfRange(mp, mp.length - 23, mp.length);
+        String stringTime = new String(clientTime);
+        LocalDateTime time = LocalDateTime.parse(stringTime);
+
+        //Create the message packet
+        MessagePacket p = new MessagePacket(id, clientMSG, time);
+        specialAdd(p);
+
+
+    }
+public static void specialAdd(MessagePacket mp)
+{
+    messages.add(mp);
+    messages.stream().distinct().sorted(Comparator.comparing(M->M.time)).collect(Collectors.toList());
+}
+
+
+    public static void recieveUpdate() { //todo fix
         boolean recieving = true;
-        ArrayList<byte[]> recievedMessages = new ArrayList<>();
+        ArrayList<MessagePacket> recievedMessages = new ArrayList<>();
 
         while (recieving) {
             try {
                 ms.setSoTimeout(10000);
                 //add messages to an arraylist
-                recievedMessages.add(recieve());
+               //todo uncomment this  recievedMessages.add(recieve());
+
+
+
+
+
+
+
 
             } catch (SocketException e) {
                 //havent recieved any new updates
@@ -186,10 +254,10 @@ public class Client {
 
         }
 
-        for (byte[] b : recievedMessages) {
-            String rMsgString = new String(b);
-            messages.add(rMsgString);
-        }
+//        for (byte[] b : recievedMessages) {
+//            String rMsgString = new String(b);        todo fix
+//            messages.add(rMsgString);
+//        }
 
     }
 

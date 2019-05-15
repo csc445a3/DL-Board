@@ -20,14 +20,14 @@ public class MessagePacket {
     //Message Packet
     //opcode + ID + Message + Time
 
-    private String userID;
-    private String messageString;
-    private String sendMsgString;
-    private LocalDateTime time;
-    private byte[] messageBytes;
-    private byte[] idBytes;
-    private byte[] timeBytes;
-    private byte[] sendMsg;
+    public String userID;
+    public String messageString;
+    public String sendMsgString;
+    public LocalDateTime time;
+    public byte[] messageBytes;
+    public byte[] idBytes;
+    public byte[] timeBytes;
+    public byte[] sendMsg;
 
     public MessagePacket(String id, byte[] msg, LocalDateTime t) {
         userID = id;

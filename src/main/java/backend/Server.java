@@ -3,7 +3,8 @@ package backend;
 import backend.MessagePacket;
 import backend.RequestPacket;
 import backend.UpdatePacket;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -14,6 +15,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import javax.crypto.Cipher;
 
 /**
@@ -199,6 +201,28 @@ public class Server {
         c.init(Cipher.DECRYPT_MODE, publicKey);
 
         return c.doFinal(encrypted);
+    }
+
+    public List<String> getAllMessages(String pathName){
+        List<String> messageList = null;
+        File rootDir = new File(pathName);
+        File[] listing = rootDir.listFiles();
+        for (File f : listing) {
+            if (f.isDirectory()) {
+                getAllMessages(f.getPath());
+            } else {
+                try {
+                    FileInputStream fis = new FileInputStream(f);
+                    byte[] temp = new byte[(int) f.getTotalSpace()];
+                    fis.read(temp);
+                    messageList.add(new String(temp));
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+            return messageList;
+        }
+        return messageList;
     }
 
 }

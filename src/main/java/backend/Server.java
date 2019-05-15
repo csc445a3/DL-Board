@@ -1,16 +1,11 @@
 package backend;
 
 import DataStorage.User;
-import backend.MessagePacket;
-import backend.RequestPacket;
-import backend.UpdatePacket;
 
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -19,9 +14,7 @@ import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.crypto.Cipher;
 
 /**
@@ -51,6 +44,10 @@ public class Server {
 
     }
 
+    
+    
+    //Creates a multicast socket and
+    //Connects the server to the multicast group
     public static void Setup() throws Exception {
         try {
 
@@ -60,7 +57,7 @@ public class Server {
             //create an inetaddress group to join
             //this will be who we send messages to on the network
             group = InetAddress.getByName("225.0.0.0");
-            //ms.joinGroup(group);
+            ms.joinGroup(group);
 
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -68,6 +65,8 @@ public class Server {
         }
     }
 
+    //Basic send method for any message
+    //Encrypts and sends to all on multicast
     public static void send(byte[] outputMessage) throws Exception {
 
         try {
@@ -86,14 +85,18 @@ public class Server {
 
     }
 
-    public static void sendUpdate(byte[] outputMessage, InetAddress ip) throws Exception {
-        //How do we send multiple messages?
-        //ip is to send to a specific client
-        //get it from the requestpacket the client sends to the server
-
+    
+    
+    //Send updates to clients
+    //takes ip to send to specific client
+    public static void sendUpdate(InetAddress ip) throws Exception {
         try {
-
-            UpdatePacket updMsg = new UpdatePacket(outputMessage);
+            
+            Set messageSet = getAllMessages("users");
+            MessagePacket[] messages = (MessagePacket[]) messageSet.toArray();
+            
+            
+            UpdatePacket updMsg = new UpdatePacket(messages.length, messages);
 
             //encrypt the message using RSA
             byte[] updateMsg = encrypt(privateKey, updMsg.getSendMessage());
@@ -109,7 +112,33 @@ public class Server {
         }
 
     }
+    //Send updates to all clients
+    public static void sendUpdateAll() throws Exception {
+        try {
+            
+            Set messageSet = getAllMessages("users");
+            MessagePacket[] messages = (MessagePacket[]) messageSet.toArray();
+            
+            
+            UpdatePacket updMsg = new UpdatePacket(messages.length, messages);
 
+            //encrypt the message using RSA
+            byte[] updateMsg = encrypt(privateKey, updMsg.getSendMessage());
+
+            DatagramPacket outgoingPacket
+                    = new DatagramPacket(updateMsg, updateMsg.length, group, port);
+
+            //send packets
+            ms.send(outgoingPacket);
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+    
+    //General recieve method
+    //recieves on multicast then sends to processing
     public static DatagramPacket recieve() throws Exception {
         try {
 
@@ -129,6 +158,11 @@ public class Server {
         return null;
     }
 
+    
+    //checks opcode on packet and creates an instance of a specific packet
+    //depending on what it is
+    //If it is a Request we send updated messages to the client that requested it
+    //If it is a Message we add it to the list of messages
     public static void processPacket(DatagramPacket p) throws Exception {
         //decrypt data using RSA
         byte[] incomingBytes = p.getData();
@@ -151,9 +185,8 @@ public class Server {
                 //after finding the ip create a RequestPacket so we can get info from it
                 RequestPacket rp = new RequestPacket(ip);
 
-                //What now?
-                //Send requestPacket to a database method
-                //That then calls the sendPacket method?
+                sendUpdate(rp.getIP());
+                
             } catch (IOException ex) {
                 System.out.println("Error in processing requestpacket");
                 System.out.println(ex.getMessage());
@@ -182,12 +215,13 @@ public class Server {
 
                 //Create the message packet
                 MessagePacket mp = new MessagePacket(id, clientMSG, time);
-
-                //What now?
-                //Send messagePacket to a database method?
-                //This "creates" a new user and then stores then stores the message in the users folder
+                
+                //store message
                 User u = new User(id);
                 u.put(new String(clientMSG), id, stringTime);
+                
+                //update all users
+                sendUpdateAll();
             } catch (IOException ex) {
                 System.out.println("Error in processing messagepacket");
                 System.out.println(ex.getMessage());
@@ -196,16 +230,17 @@ public class Server {
         }
 
         //Do nothing if opcode is something else
-        //probably should never be anything else
     }
 
+    //Encrypys a byte[] using RSA
     public static byte[] encrypt(PrivateKey privateKey, byte[] message) throws Exception {
         Cipher c = Cipher.getInstance("RSA");
         c.init(Cipher.ENCRYPT_MODE, privateKey);
 
         return c.doFinal(message);
     }
-
+    
+    //Decrypts a byte[] using RSA
     public static byte[] decrypt(PublicKey publicKey, byte[] encrypted) throws Exception {
         Cipher c = Cipher.getInstance("RSA");
         c.init(Cipher.DECRYPT_MODE, publicKey);
@@ -213,7 +248,7 @@ public class Server {
         return c.doFinal(encrypted);
     }
 
-    public Set getAllMessages(String pathname){
+    public static Set getAllMessages(String pathname){
         Set messageList = new HashSet();
         File dir = new File(pathname);
         System.out.println(dir.toPath().toString());

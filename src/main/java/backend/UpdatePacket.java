@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package backend;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
 
-/**
- *
- * @author asuit
- */
 
 //This packet is meant for the server
 //and will allow it to send an updated list to the client
@@ -26,33 +18,32 @@ public class UpdatePacket {
     //
     //Format
     //Message Packet
-    //opcode + ?
+    //opcode + size + message
     
     private byte[] updateMessage;
     private byte[] sendMsg;
     private String sendMsgString;
 
-    public UpdatePacket(byte[] updateMessage) {
-
+    public UpdatePacket(int messageSize, MessagePacket[] messages) {
+        
+        byte[] size = ByteBuffer.allocate(4).putInt(messageSize).array();
         byte[] opCode = {0, 3};
-
-        try {
-            //concatenate byte arrays to create outgoing message
-            //which will be in our format
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            os.write(opCode);
-            
-            //os.write(ipBytes);
-
-            //this will be the message we send out to the client
-            //fully formatted
-            sendMsg = os.toByteArray();
-
-            sendMsgString = new String(sendMsg);
-            
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        String delimString = "csc445a3";
+        byte[] delimeter = delimString.getBytes();
+        //concatenate byte arrays to create outgoing message
+        //which will be in our format
+        System.arraycopy(opCode, 0, sendMsg, 0, opCode.length);
+        System.arraycopy(size, 0, sendMsg, sendMsg.length, size.length);
+        
+        for(MessagePacket m: messages){
+            //add a delimeter before each message
+            System.arraycopy(delimeter, 0, sendMsg, sendMsg.length, delimeter.length);
+            System.arraycopy(m.getSendMessage(), 0, sendMsg, sendMsg.length, messages.length);
         }
+        
+        sendMsgString = new String(sendMsg);
+            
+       
 
     }
 

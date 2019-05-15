@@ -4,10 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-/**
- *
- * @author asuit
- */
 //This packet is meant for the client and server
 //it will hold the foramtting for message packets
 //and allow information to be accessed easily

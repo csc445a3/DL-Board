@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package backend;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 
-/**
- *
- * @author asuit
- */
+
 //This packet is meant for the client
 //and will allow them to ask for a refresh on messages from the server
 //the server then can send an update directly to the client based on its ip

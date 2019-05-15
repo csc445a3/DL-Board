@@ -2,6 +2,12 @@ package backend;
 
 import DataStorage.User;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 public class tester {
 
     public static void main(String[] args){
@@ -14,10 +20,15 @@ public class tester {
         try{
 
             Server s = new Server();
-            s.getAllMessages("user/");
-
-        }catch(Throwable throwable){
-
+            File temp = new File("users");
+            System.out.println(temp.getPath());
+            Set messages = s.getAllMessages(temp.getPath());
+            Iterator iter = messages.iterator();
+            while(iter.hasNext()){
+                System.out.println(iter.next());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
 
     }

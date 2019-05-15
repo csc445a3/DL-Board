@@ -1,5 +1,6 @@
 package backend;
 
+import DataStorage.User;
 import backend.MessagePacket;
 import backend.RequestPacket;
 import backend.UpdatePacket;
@@ -8,6 +9,8 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -15,7 +18,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.crypto.Cipher;
 
 /**
@@ -54,9 +60,10 @@ public class Server {
             //create an inetaddress group to join
             //this will be who we send messages to on the network
             group = InetAddress.getByName("225.0.0.0");
-            ms.joinGroup(group);
+            //ms.joinGroup(group);
 
         } catch (IOException ex) {
+            ex.printStackTrace();
             System.out.println(ex.getMessage());
         }
     }
@@ -178,6 +185,9 @@ public class Server {
 
                 //What now?
                 //Send messagePacket to a database method?
+                //This "creates" a new user and then stores then stores the message in the users folder
+                User u = new User(id);
+                u.put(new String(clientMSG), id, stringTime);
             } catch (IOException ex) {
                 System.out.println("Error in processing messagepacket");
                 System.out.println(ex.getMessage());
@@ -203,24 +213,26 @@ public class Server {
         return c.doFinal(encrypted);
     }
 
-    public List<String> getAllMessages(String pathName){
-        List<String> messageList = null;
-        File rootDir = new File(pathName);
-        File[] listing = rootDir.listFiles();
-        for (File f : listing) {
-            if (f.isDirectory()) {
-                getAllMessages(f.getPath());
-            } else {
-                try {
-                    FileInputStream fis = new FileInputStream(f);
-                    byte[] temp = new byte[(int) f.getTotalSpace()];
-                    fis.read(temp);
-                    messageList.add(new String(temp));
-                }catch(IOException e){
-                    e.printStackTrace();
+    public Set getAllMessages(String pathname){
+        Set messageList = new HashSet();
+        File dir = new File(pathname);
+        System.out.println(dir.toPath().toString());
+        for(File f : dir.listFiles()){
+            if(f.isFile()) {
+                if(!f.toPath().toString().toLowerCase().contains(".ds_store")) {
+                    System.out.println(f.toPath().toString());
+                    byte[] temp = new byte[(int)f.length()];
+                    try {
+                        FileInputStream fis = new FileInputStream(f);
+                        fis.read(temp);
+                        messageList.add(new String(temp));
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
                 }
             }
-            return messageList;
+            else
+                messageList.addAll(getAllMessages(f.toPath().toString()));
         }
         return messageList;
     }

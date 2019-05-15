@@ -8,7 +8,6 @@ public class User {
     private FileUtils fileUtils;
     private String userName;
     private File rootDir;
-    private int messageID;
 
     public User(String userName){
 
@@ -16,7 +15,6 @@ public class User {
         rootDir = new File("users");
         rootDir.mkdir();
         fileUtils = new FileUtils(rootDir);
-        messageID = 0;
         try {
             if (!rootDir.exists())
                 rootDir.createNewFile();
@@ -25,10 +23,9 @@ public class User {
         }
     }
 
-    public void put(String message, String userName){
+    public void put(String message, String userName, String time){
         try {
-            messageID++;
-            fileUtils.put(message, userName, Integer.toString(messageID));
+            fileUtils.put(message, userName, time);
         }catch(IOException e){
             e.printStackTrace();
         }

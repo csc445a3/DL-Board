@@ -28,7 +28,7 @@ public class UpdatePacket {
         
         byte[] size = ByteBuffer.allocate(4).putInt(messageSize).array();
         byte[] opCode = {0, 3};
-        String delimString = "csc445a3";
+        String delimString = "cs*2/4$52c445a3";
         byte[] delimeter = delimString.getBytes();
         //concatenate byte arrays to create outgoing message
         //which will be in our format

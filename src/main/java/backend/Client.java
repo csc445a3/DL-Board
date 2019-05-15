@@ -188,13 +188,25 @@ public class Client {
           // test  UpdatePacket up = (UpdatePacket)incomingBytes;
             //todo deal with update
 
-            //todo find if this is right substring this is for testing V
-            byte [] lengthOfArray = Arrays.copyOfRange(incomingBytes,2,5);
+
+            byte [] lengthOfArray = Arrays.copyOfRange(incomingBytes,0,3);
             int len = ByteBuffer.wrap(lengthOfArray).getInt();
-//            for(int i =0; i<len;i++)
-//            {
-//
+            String delimString = "cs*2/4$52c445a3";
+            byte[] delimeter = delimString.getBytes();
+//            byte [] allMessages = Arrays.copyOfRange(incomingBytes,x,incomingBytes.length-n);
+//            convert that to a string:
+//        split on split thing:
+//            for(byte [] messagePacket : splitList){
+//                helperMethod(messagePacket);
 //            }
+            byte [] messagecluster = Arrays.copyOfRange(incomingBytes,14,incomingBytes.length);
+            String [] split = (new String(messagecluster)).split(delimString);
+            for(String s: split)
+            {
+                byte [] ineffecient = s.getBytes();
+                helper(ineffecient);
+            }
+
 
 
         }

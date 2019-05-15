@@ -29,7 +29,7 @@
                            <children>
                               <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="400.0" style="-fx-background-color: #ecf0f1; -fx-background-radius: 1000; -fx-border-color: #7bed9f; -fx-border-radius: 100; -fx-border-width: 3;">
                                  <children>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 20;">
+                                    <HBox alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="400.0" style="-fx-spacing: 20;">
                                        <children>
                                           <Text fill="#2d3436" strokeType="OUTSIDE" strokeWidth="0.0" text="Anon says:">
                                              <font>
@@ -38,7 +38,7 @@
                                           </Text>
                                           <Text fill="#2d3436" strokeType="OUTSIDE" strokeWidth="0.0" text="This class rules!!!">
                                              <font>
-                                                <Font name="Helvetica Neue" size="13.0" />
+                                                <Font name="Helvetica Neue Medium" size="13.0" />
                                              </font>
                                           </Text>
                                        </children>

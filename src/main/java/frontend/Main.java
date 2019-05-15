@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(600);
-        primaryStage.setTitle("Data Mea");
+        primaryStage.setTitle("DL-Board");
         Pane root = FXMLLoader.load(this.getClass().getClassLoader().getResource("home.fxml"));
         primaryStage.setScene(new Scene(root));
         root.requestFocus();

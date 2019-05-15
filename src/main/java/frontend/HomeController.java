@@ -10,11 +10,19 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static javafx.scene.layout.AnchorPane.setTopAnchor;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 
 public class HomeController implements Initializable {
 
@@ -50,7 +59,7 @@ public class HomeController implements Initializable {
     @FXML
     private StackPane refreshButton;
     @FXML
-    private JFXDrawer writePostDrawer;
+    public JFXDrawer writePostDrawer;
 
     private DoubleProperty scrollPaneLocation = new SimpleDoubleProperty(this, "scrollPaneLocation");
     private WritePostController writePostController;
@@ -120,10 +129,71 @@ public class HomeController implements Initializable {
             } else {
                 writePostDrawer.setVisible(true);
                 writePostDrawer.open();
-                changeScrollPaneHeight(75);
+                changeScrollPaneHeight(65);
             }
         });
 
+
+        writePostController.postButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            writePostController.name = writePostController.nameField.getText();
+            writePostController.message = writePostController.messageField.getText();
+            writePostDrawer.close();
+            changeScrollPaneHeight(0);
+            final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+            executor.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    Platform.runLater(()-> writePostDrawer.setVisible(false));
+                }
+            }, 500, TimeUnit.MILLISECONDS);
+            executor.shutdown();
+
+            //Do the client creation and message sending here:
+
+        });
+
+        //Adding a Test Message
+        bodyVBox.getChildren().add(createPost("Doug", "Hello"));
+
+    }
+
+    public StackPane createPost(String name, String message){
+        StackPane messageBody = new StackPane();
+        messageBody.setPrefSize(400,75);
+        messageBody.setMinSize(USE_PREF_SIZE,USE_PREF_SIZE);
+        messageBody.setMaxSize(USE_PREF_SIZE,USE_PREF_SIZE);
+        messageBody.setStyle("-fx-background-color: #ecf0f1; -fx-background-radius: 100; -fx-border-color: #7bed9f; -fx-border-radius: 100; -fx-border-width: 3;");
+
+        DropShadow messageDropShadow = new DropShadow();
+        messageDropShadow.setBlurType(BlurType.THREE_PASS_BOX);
+        messageDropShadow.setWidth(100);
+        messageDropShadow.setHeight(100);
+        messageDropShadow.setHeight(100);
+        messageDropShadow.setRadius(50);
+        messageDropShadow.setHeight(100);
+        messageDropShadow.setSpread(0);
+        messageDropShadow.setColor(new Color(0,0,0,0.25));
+        messageBody.setEffect(messageDropShadow);
+
+        HBox messageHBox = new HBox();
+        messageHBox.setAlignment(Pos.CENTER_LEFT);
+        messageHBox.setStyle("-fx-spacing: 20; -fx-padding: 20 20 20 20;");
+
+        Text nameText = new Text(name + " says:");
+        nameText.setFont(Font.font ("Helvetica Neue Bold", 15));
+        nameText.setStyle("-fx-fill: #2d3436;");
+        nameText.setWrappingWidth(80);
+
+        Text messageText = new Text(message);
+        messageText.setFont(Font.font ("Helvetica Neue Medium", 13));
+        messageText.setStyle("-fx-fill: #2d3436;");
+        messageText.setWrappingWidth(240);
+
+        messageHBox.getChildren().add(nameText);
+        messageHBox.getChildren().add(messageText);
+        messageBody.getChildren().add(messageHBox);
+
+        return messageBody;
 
     }
 

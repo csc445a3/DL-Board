@@ -6,6 +6,11 @@ public class ServerMain {
 
         try {
             Server s = new Server();
+            while(true){
+                System.out.println("Running server");
+                s.recieve();
+                
+            }
         } catch(Exception e){
             e.printStackTrace();
         }

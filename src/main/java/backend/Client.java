@@ -89,8 +89,8 @@ public class Client {
 
         try {
             //encrypt the message using RSA
-            byte[] outMsg = encrypt(privateKey, outputMessage);
-
+            //byte[] outMsg = encrypt(publicKey, outputMessage);
+            
             DatagramPacket outgoingPacket
                     = new DatagramPacket(outputMessage, outputMessage.length, group, port);
 
@@ -109,14 +109,15 @@ public class Client {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("America/New_York"));
 
             MessagePacket msg = new MessagePacket(id, outputMessage, now);
-
+            
+           
             //Encrypt this message using RSA
-            byte[] sendMsg = encrypt(privateKey, msg.getSendMessage());
+            //byte[] sendMsg = encrypt(publicKey, msg.getSendMessage());
 
             //send formatted message (SendMessage)
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(sendMsg, sendMsg.length, group, port);
-
+                    = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), group, port);
+            System.out.println(outgoingPacket.getData().length);
             //send packets
             ms.send(outgoingPacket);
 
@@ -133,8 +134,8 @@ public class Client {
             RequestPacket msg = new RequestPacket(ip);
 
             //Encrypt this request using RSA
-            byte[] sendMsg = encrypt(privateKey, msg.getSendMessage());
-
+            //byte[] sendMsg = encrypt(publicKey, msg.getSendMessage());
+            
             DatagramPacket outgoingPacket
                     = new DatagramPacket(msg.getSendMessage(), msg.getSendMsgLength(), group, port);
 
@@ -169,7 +170,7 @@ public class Client {
     public static void processPacket(DatagramPacket p) throws Exception {
         //decrypt data using RSA
         byte[] incomingBytes = p.getData();
-        incomingBytes = decrypt(publicKey, incomingBytes);
+        //incomingBytes = decrypt(privateKey, incomingBytes);
 
         //take the first two bytes of the incoming packet, which should be the opcode
         byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 1);
@@ -285,16 +286,16 @@ public static void specialAdd(MessagePacket mp)
         return publicKey;
     }
 
-    public static byte[] encrypt(PrivateKey privateKey, byte[] message) throws Exception {
+    public static byte[] encrypt(PublicKey publicKey, byte[] message) throws Exception {
         Cipher c = Cipher.getInstance("RSA");
-        c.init(Cipher.ENCRYPT_MODE, privateKey);
+        c.init(Cipher.ENCRYPT_MODE, publicKey);
 
         return c.doFinal(message);
     }
 
-    public static byte[] decrypt(PublicKey publicKey, byte[] encrypted) throws Exception {
+    public static byte[] decrypt(PrivateKey privateKey, byte[] encrypted) throws Exception {
         Cipher c = Cipher.getInstance("RSA");
-        c.init(Cipher.DECRYPT_MODE, publicKey);
+        c.init(Cipher.DECRYPT_MODE, privateKey);
 
         return c.doFinal(encrypted);
     }

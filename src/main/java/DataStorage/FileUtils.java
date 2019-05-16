@@ -28,16 +28,21 @@ public class FileUtils {
 
     public void put(String message, String userName, String messageID) throws IOException {
 
+        userName = userName.trim();
+        
         if (contains(userName)){
             File newFile = new File(root.getPath() + '/' + userName + '/' + messageID);
             newFile.createNewFile();
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(newFile.getAbsolutePath()));
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(newFile));
             bos.write(message.getBytes());
         }
         else{
             File userDir = new File(root.getPath() + "/" + userName);
             userDir.mkdirs();
             File newFile = new File(userDir.getPath() + "/" + messageID + ".txt");
+            if(!newFile.exists())
+                newFile.createNewFile();
+            
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(newFile));
             bos.write(message.getBytes());
             bos.close();

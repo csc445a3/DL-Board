@@ -73,11 +73,9 @@ public class Server {
     public static void send(byte[] outputMessage) throws Exception {
 
         try {
-            //encrypt the message using RSA
-            byte[] outMsg = encrypt(privateKey, outputMessage);
-
+            
             DatagramPacket outgoingPacket
-                    = new DatagramPacket(outMsg, outMsg.length, group, port);
+                    = new DatagramPacket(outputMessage, outputMessage.length, group, port);
 
             //send packets
             ms.send(outgoingPacket);
@@ -147,7 +145,7 @@ public class Server {
     public static DatagramPacket recieve() throws Exception {
         try {
 
-            byte[] buf = new byte[128];
+            byte[] buf = new byte[1280];
             DatagramPacket incomingPacket
                     = new DatagramPacket(buf, buf.length);
 
@@ -211,11 +209,11 @@ public class Server {
                 byte[] clientID = Arrays.copyOfRange(incomingBytes, 2, 14);
                 String id = new String(clientID);
 
-                byte[] clientMSG = Arrays.copyOfRange(incomingBytes, 14, incomingBytes.length - 23);
-
                 //Time is 23 Bytes long
-                byte[] clientTime = Arrays.copyOfRange(incomingBytes, incomingBytes.length - 23, incomingBytes.length);
+                byte[] clientTime = Arrays.copyOfRange(incomingBytes, 14, 37);
                 String stringTime = new String(clientTime);
+                
+                byte[] clientMSG = Arrays.copyOfRange(incomingBytes, 37, incomingBytes.length);
 
                 //Create the message packet
                 MessagePacket mp = new MessagePacket(id.getBytes(), clientMSG, stringTime);
@@ -264,7 +262,7 @@ public class Server {
                     try {
                         FileInputStream fis = new FileInputStream(f);
                         fis.read(temp);
-                        messageList.add(new String(temp));
+                        messageList.add(new MessagePacket(f.getParent().getBytes(), temp, f.getName().split(".txt")[0]));
                     }catch(IOException e){
                         e.printStackTrace();
                     }

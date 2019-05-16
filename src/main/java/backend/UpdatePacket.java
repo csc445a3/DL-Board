@@ -42,7 +42,9 @@ public class UpdatePacket {
         bb.put(m.getSendMessage());
         }
         
+        sendMsg = bb.array();
         sendMsgString = new String(sendMsg);
+        
             
        
 

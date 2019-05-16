@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.Client;
+import backend.Server;
 import com.jfoenix.controls.JFXDrawer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -8,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -81,7 +83,7 @@ public class HomeController implements Initializable {
         protected Void call() throws Exception {
             spinnerStackPane.setVisible(true);
             //Do Refresh stuff here:
-
+            Server.sendUpdateAll();
 
             return null;
         }

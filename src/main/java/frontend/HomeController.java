@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import static javafx.scene.layout.AnchorPane.setTopAnchor;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import java.util.*;
+import javafx.animation.Timeline;
 
 
 public class HomeController implements Initializable {
@@ -263,13 +264,29 @@ public class HomeController implements Initializable {
                     clientMessage = writePostController.message.getBytes();
                     Client c = new Client();
                     c.sendMessage(clientMessage, writePostController.name);
-                    c.recieve();
-                    ArrayList<MessagePacket> messagePackets = c.getMessagePackets();
-                    System.out.println(messagePackets.size());
-                    for (MessagePacket m : messagePackets){
-                        System.out.println(m.getID());
-                        bodyVBox.getChildren().add(createPost(m.getID(), m.getMsgString()));
-                    }
+                    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), new EventHandler<ActionEvent>() {
+
+                        private int i = 1;    
+
+                        @Override
+                        public void handle(ActionEvent event) {
+                             try {
+                            c.recieve();
+                            ArrayList<MessagePacket> messagePackets = c.getMessagePackets();
+                            System.out.println(messagePackets.size());
+                            for (MessagePacket m : messagePackets){
+                                System.out.println(m.getID());
+                                Platform.runLater(()-> bodyVBox.getChildren().add(createPost(m.getID(), m.getMsgString())));
+                            }
+                             } catch (Exception err) {
+                    err.printStackTrace();
+                }
+                        }
+             
+                             
+                    }));
+                    timeline.setCycleCount(Timeline.INDEFINITE);
+                    timeline.play();
 
                 } catch (Exception err) {
                     err.printStackTrace();

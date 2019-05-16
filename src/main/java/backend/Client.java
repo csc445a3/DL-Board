@@ -71,9 +71,9 @@ public class Client {
 
             //create an inetaddress group to join
             //this will be who we send messages to on the network
-            group = InetAddress.getByName("225.0.0.0");
+            group = InetAddress.getByName("224.0.0.193");
             ms.joinGroup(group);
-            ms.setLoopbackMode(false);
+//            ms.setLoopbackMode(false);
 
 
 

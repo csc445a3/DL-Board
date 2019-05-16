@@ -108,7 +108,7 @@ public class Client {
                  byte [] idb= new byte[12];
                  idb = id.getBytes();
 
-            MessagePacket msg = new MessagePacket(idb, outputMessage, now.toString());
+            MessagePacket msg = new MessagePacket(idb, outputMessage, now.toString(), 1280);
            
             //Encrypt this message using RSA
             //byte[] sendMsg = encrypt(publicKey, msg.getSendMessage());
@@ -223,7 +223,7 @@ public class Client {
         byte[] clientMSG = Arrays.copyOfRange(mp, 37, mp.length);
 
         //Create the message packet
-        MessagePacket p = new MessagePacket(id.getBytes(), clientMSG, stringTime);
+        MessagePacket p = new MessagePacket(id.getBytes(), clientMSG, stringTime, mp.length);
         specialAdd(p);
 
 

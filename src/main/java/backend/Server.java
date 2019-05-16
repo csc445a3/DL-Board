@@ -216,7 +216,7 @@ public class Server {
                 byte[] clientMSG = Arrays.copyOfRange(incomingBytes, 37, incomingBytes.length);
 
                 //Create the message packet
-                MessagePacket mp = new MessagePacket(id.getBytes(), clientMSG, stringTime);
+                MessagePacket mp = new MessagePacket(id.getBytes(), clientMSG, stringTime, p.getLength());
                 
                 //store message
                 User u = new User(id);
@@ -253,16 +253,14 @@ public class Server {
     public static List<MessagePacket> getAllMessages(String pathname){
         List messageList = new ArrayList<>();
         File dir = new File(pathname);
-        System.out.println(dir.toPath().toString());
         for(File f : dir.listFiles()){
             if(f.isFile()) {
                 if(!f.toPath().toString().toLowerCase().contains(".ds_store")) {
-                    System.out.println(f.toPath().toString());
                     byte[] temp = new byte[(int)f.length()];
                     try {
                         FileInputStream fis = new FileInputStream(f);
                         fis.read(temp);
-                        messageList.add(new MessagePacket(f.getParent().getBytes(), temp, f.getName().split(".txt")[0]));
+                        messageList.add(new MessagePacket(f.getParent().getBytes(), temp, f.getName().split(".txt")[0], 1280));
                     }catch(IOException e){
                         e.printStackTrace();
                     }

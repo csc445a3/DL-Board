@@ -26,25 +26,24 @@ public class MessagePacket {
     public byte[] idBytes = new byte[12];
     public byte[] timeBytes = new byte[23];
     public byte[] temp;
-    public byte[] sendMsg = new byte[128];
+    public byte[] sendMsg = new byte[1280];
 
-    public MessagePacket(String id, byte[] msg, LocalDateTime t) {
-        userID = id;
+    public MessagePacket(byte [] id, byte[] msg, String t) {
+        
         //idBytes = Arrays.copyOfRange(userID., 0, 0);
 
         messageBytes = msg;
         messageString = new String(messageBytes);
 
-        time = t;
-
-        timeBytes = time.toString().getBytes();
+        timeBytes = t.getBytes();
         byte [] opcode = {0,2};
-        ByteBuffer bb = ByteBuffer.allocate(128);
+        ByteBuffer bb = ByteBuffer.allocate(1280);
         bb.put(opcode);
-        idBytes = Arrays.copyOfRange(id.getBytes(), 0, 12);
+        System.arraycopy(id, 0, idBytes, 0, id.length);//Arrays.copyOfRange(id.getBytes(), 2, 14);
         bb.put(idBytes);
         bb.put(timeBytes);
-        bb.put(new String(msg).getBytes());
+       // msg.trim();
+        bb.put(msg);
         
 
 //        try {

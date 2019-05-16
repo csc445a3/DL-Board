@@ -1,19 +1,16 @@
 package backend;
 
-import backend.MessagePacket;
-import backend.RequestPacket;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import javax.crypto.Cipher;
 import java.util.stream.Collectors;
+import javax.crypto.Cipher;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -76,7 +73,7 @@ public class Client {
             //this will be who we send messages to on the network
             group = InetAddress.getByName("225.0.0.0");
             ms.joinGroup(group);
-
+            ms.setLoopbackMode(false);
 
 
 
@@ -107,9 +104,11 @@ public class Client {
 
         try {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("America/New_York"));
+            System.out.println("test id:"+id);
+                 byte [] idb= new byte[12];
+                 idb = id.getBytes();
 
-            MessagePacket msg = new MessagePacket(id, outputMessage, now);
-            
+            MessagePacket msg = new MessagePacket(idb, outputMessage, now.toString());
            
             //Encrypt this message using RSA
             //byte[] sendMsg = encrypt(publicKey, msg.getSendMessage());
@@ -173,7 +172,7 @@ public class Client {
         //incomingBytes = decrypt(privateKey, incomingBytes);
 
         //take the first two bytes of the incoming packet, which should be the opcode
-        byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 1);
+        byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 2);
 
         if (opcode[0] == 0 && opcode[1] == 1) {
                 //do nothing , request to server
@@ -187,7 +186,7 @@ public class Client {
             //todo deal with update
 
 
-            byte [] lengthOfArray = Arrays.copyOfRange(incomingBytes,0,3);
+            byte [] lengthOfArray = Arrays.copyOfRange(incomingBytes,2,6);
             int len = ByteBuffer.wrap(lengthOfArray).getInt();
             String delimString = "cs*2/4$52c445a3";
             byte[] delimeter = delimString.getBytes();
@@ -197,7 +196,7 @@ public class Client {
 //            for(byte [] messagePacket : splitList){
 //                helperMethod(messagePacket);
 //            }
-            byte [] messagecluster = Arrays.copyOfRange(incomingBytes,14,incomingBytes.length);
+            byte [] messagecluster = Arrays.copyOfRange(incomingBytes,21,incomingBytes.length);
             String [] split = (new String(messagecluster)).split(delimString);
             for(String s: split)
             {
@@ -218,15 +217,13 @@ public class Client {
         byte[] clientID = Arrays.copyOfRange(mp, 2, 14);
         String id = new String(clientID);
 
-        byte[] clientMSG = Arrays.copyOfRange(mp, 14, mp.length - 23);
 
-        //Time is 23 Bytes long
-        byte[] clientTime = Arrays.copyOfRange(mp, mp.length - 23, mp.length);
+        byte[] clientTime = Arrays.copyOfRange(mp, 14, 37);
         String stringTime = new String(clientTime);
-        LocalDateTime time = LocalDateTime.parse(stringTime);
+        byte[] clientMSG = Arrays.copyOfRange(mp, 37, mp.length);
 
         //Create the message packet
-        MessagePacket p = new MessagePacket(id, clientMSG, time);
+        MessagePacket p = new MessagePacket(id.getBytes(), clientMSG, stringTime);
         specialAdd(p);
 
 

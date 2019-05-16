@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -202,9 +203,9 @@ public class Server {
 
             try {
                 //how many bytes does the IP Store as?
-                byte[] clientIP = Arrays.copyOfRange(incomingBytes, 1, 2);
+              //  byte[] clientIP = Arrays.copyOfRange(incomingBytes, 1, 2);
 
-                InetAddress ip = InetAddress.getByAddress(clientIP);
+                InetAddress ip = p.getAddress();
 
                 //ID is 12 bytes long
                 byte[] clientID = Arrays.copyOfRange(incomingBytes, 2, 14);
@@ -215,10 +216,9 @@ public class Server {
                 //Time is 23 Bytes long
                 byte[] clientTime = Arrays.copyOfRange(incomingBytes, incomingBytes.length - 23, incomingBytes.length);
                 String stringTime = new String(clientTime);
-                LocalDateTime time = LocalDateTime.parse(stringTime);
 
                 //Create the message packet
-                MessagePacket mp = new MessagePacket(id, clientMSG, time);
+                MessagePacket mp = new MessagePacket(id.getBytes(), clientMSG, stringTime);
                 
                 //store message
                 User u = new User(id);
@@ -253,7 +253,7 @@ public class Server {
     }
 
     public static List<MessagePacket> getAllMessages(String pathname){
-        List messageList = null;
+        List messageList = new ArrayList<>();
         File dir = new File(pathname);
         System.out.println(dir.toPath().toString());
         for(File f : dir.listFiles()){

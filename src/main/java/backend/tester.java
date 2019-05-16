@@ -22,11 +22,11 @@ public class tester {
             Server s = new Server();
             File temp = new File("users");
             System.out.println(temp.getPath());
-            Set messages = s.getAllMessages(temp.getPath());
-            Iterator iter = messages.iterator();
-            while(iter.hasNext()){
-                System.out.println(iter.next());
-            }
+            //Set messages = s.getAllMessages(temp.getPath());
+            //Iterator iter = messages.iterator();
+            //while(iter.hasNext()){
+            //    System.out.println(iter.next());
+            //}
         }catch(Exception e){
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-/target/
+target/*
 
 ##To ignore the db properties
 *.properties

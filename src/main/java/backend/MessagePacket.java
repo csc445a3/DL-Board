@@ -39,7 +39,9 @@ public class MessagePacket {
         ByteBuffer bb = ByteBuffer.allocate(packetSize);
         bb.put(opcode);
         System.arraycopy(id, 0, idBytes, 0, id.length);//Arrays.copyOfRange(id.getBytes(), 2, 14);
-        System.out.println(new String(idBytes));
+        userID = new String(idBytes);
+        
+        //System.out.println(new String(idBytes));
         bb.put(idBytes);
         bb.put(timeBytes);
        // msg.trim();

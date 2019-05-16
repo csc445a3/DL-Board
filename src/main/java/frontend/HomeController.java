@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.Client;
+import backend.MessagePacket;
 import backend.Server;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
@@ -41,6 +42,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.scene.layout.AnchorPane.setTopAnchor;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
+import java.util.*;
+
 
 public class HomeController implements Initializable {
 
@@ -85,7 +88,7 @@ public class HomeController implements Initializable {
         protected Void call() throws Exception {
             spinnerStackPane.setVisible(true);
             //Do Refresh stuff here:
-            Server.sendUpdateAll();
+            
 
             return null;
         }
@@ -261,6 +264,12 @@ public class HomeController implements Initializable {
                     Client c = new Client();
                     c.sendMessage(clientMessage, writePostController.name);
                     c.recieve();
+                    ArrayList<MessagePacket> messagePackets = c.getMessagePackets();
+                    System.out.println(messagePackets.size());
+                    for (MessagePacket m : messagePackets){
+                        System.out.println(m.getID());
+                        bodyVBox.getChildren().add(createPost(m.getID(), m.getMsgString()));
+                    }
 
                 } catch (Exception err) {
                     err.printStackTrace();
@@ -279,7 +288,7 @@ public class HomeController implements Initializable {
         });
 
         //Adding a Test Message
-        bodyVBox.getChildren().add(createPost("Doug", "Hello"));
+        //bodyVBox.getChildren().add(createPost("Doug", "Hello"));
 
     }
 

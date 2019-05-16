@@ -305,7 +305,7 @@ public static void specialAdd(MessagePacket mp)
     }
 
     
-    public static List getMessagePacket(){
+    public ArrayList<MessagePacket> getMessagePackets(){
         return messages;
     }
     

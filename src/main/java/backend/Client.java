@@ -234,8 +234,8 @@ public static void specialAdd(MessagePacket mp)
 {
     messages.add(mp);
     messages.stream().distinct().sorted(Comparator.comparing(M->M.time)).collect(Collectors.toList());
-    if(messages.size() > 5000)      // if there are more than 5000 messages in working set, just dump and keep 50 newest ones...
-    {
+    if(messages.size() > 5000)
+    {// if there are more than 5000 messages in working set, just dump and keep 500 newest ones...
         List<MessagePacket> messages2 = messages.subList(0,500);
         messages.clear();
         messages2.stream().forEach(s->messages.add(s));
@@ -244,7 +244,7 @@ public static void specialAdd(MessagePacket mp)
 }
 
 
-//    public static void recieveUpdate() { //todo fix
+//    public static void recieveUpdate() {
 //        boolean recieving = true;
 //        ArrayList<MessagePacket> recievedMessages = new ArrayList<>();
 //
@@ -252,12 +252,12 @@ public static void specialAdd(MessagePacket mp)
 //            try {
 //                ms.setSoTimeout(10000);
 //                //add messages to an arraylist
-//               //todo uncomment this  recievedMessages.add(recieve());
+//               // uncomment this  recievedMessages.add(recieve());
 //
 //
 //
 //
-//
+//                  /todo someone else tell me if this is needed, pretty sure its not but ill leave it here
 //
 //
 //
@@ -271,7 +271,7 @@ public static void specialAdd(MessagePacket mp)
 //        }
 //
 ////        for (byte[] b : recievedMessages) {
-////            String rMsgString = new String(b);        todo fix
+////            String rMsgString = new String(b);
 ////            messages.add(rMsgString);
 ////        }
 //

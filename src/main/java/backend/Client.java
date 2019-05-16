@@ -204,7 +204,6 @@ public class Client {
             for(String s: split)
             {
                 byte [] ineffecient = s.getBytes();
-                messages.add(helper(ineffecient));
                 
             }
             
@@ -217,7 +216,7 @@ public class Client {
         
     }
 
-    public static MessagePacket helper(byte []mp)
+    public static void helper(byte []mp)
     {
         byte[] clientID = Arrays.copyOfRange(mp, 2, 14);
         String id = new String(clientID);
@@ -229,7 +228,7 @@ public class Client {
 
         //Create the message packet
         MessagePacket p = new MessagePacket(id.getBytes(), clientMSG, stringTime, mp.length);
-        return p;
+        messages.add(p);
        // specialAdd(p);
 
 

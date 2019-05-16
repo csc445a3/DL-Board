@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.Client;
 import com.jfoenix.controls.JFXDrawer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -163,6 +164,16 @@ public class HomeController implements Initializable {
             executor.shutdown();
 
             //Do the client creation and message sending here:
+            try{
+                byte[] clientMessage = new byte[128];
+                clientMessage = writePostController.message.getBytes();
+                Client c = new Client();
+                c.sendMessage(clientMessage, writePostController.name);
+                bodyVBox.getChildren().add(createPost(writePostController.name, writePostController.message));
+
+            }catch(Exception err){
+                err.printStackTrace();
+            }
 
         });
 

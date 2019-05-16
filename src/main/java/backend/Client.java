@@ -103,7 +103,7 @@ public class Client {
 
     }
 
-    public static void sendMessage(byte[] outputMessage) throws Exception {
+    public static void sendMessage(byte[] outputMessage, String id) throws Exception {
 
         try {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("America/New_York"));

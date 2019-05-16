@@ -13,7 +13,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.BoxBlur;
@@ -41,7 +39,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static javafx.scene.layout.AnchorPane.setTopAnchor;
 import static javafx.scene.layout.Region.USE_PREF_SIZE;
 
@@ -73,16 +70,13 @@ public class HomeController implements Initializable {
     public JFXDrawer writePostDrawer;
     @FXML
     private StackPane spinnerStackPane;
-
     private DoubleProperty scrollPaneLocation = new SimpleDoubleProperty(this, "scrollPaneLocation");
     private WritePostController writePostController;
-    static Stage primaryStage;
+    private static Stage primaryStage;
     private ResourceLoadingTask refresh = new ResourceLoadingTask();
     private boolean opened = false;
 
-
-
-    static public void setStage(Stage stage){
+    static void setStage(Stage stage) {
         primaryStage = stage;
     }
 
@@ -107,7 +101,7 @@ public class HomeController implements Initializable {
                 Platform.exit();
                 System.exit(0);
             }
-    });
+        });
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("writePost.fxml"));
@@ -118,7 +112,6 @@ public class HomeController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
 
         //JavaFX resizing junk:
         scrollPane.setFitToWidth(true);
@@ -155,6 +148,7 @@ public class HomeController implements Initializable {
             refreshButton.setStyle("-fx-background-color: #27ae60; -fx-background-radius: 1000;");
         });
 
+
         //Open write post drawer
         writePostButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
             if (writePostDrawer.isOpened()) {
@@ -164,7 +158,7 @@ public class HomeController implements Initializable {
                 executor.schedule(new Runnable() {
                     @Override
                     public void run() {
-                        Platform.runLater(()-> writePostDrawer.setVisible(false));
+                        Platform.runLater(() -> writePostDrawer.setVisible(false));
                     }
                 }, 500, TimeUnit.MILLISECONDS);
                 executor.shutdown();
@@ -179,13 +173,13 @@ public class HomeController implements Initializable {
         writePostController.postButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
             writePostController.name = writePostController.nameField.getText();
             writePostController.message = writePostController.messageField.getText();
-            if (writePostController.name.length() > 12 && writePostController.message.length() > 100){
-                BoxBlur blur = new BoxBlur(3,3,3);
+            if (writePostController.name.length() > 12 && writePostController.message.length() > 100) {
+                BoxBlur blur = new BoxBlur(2, 2, 2);
                 JFXDialogLayout content = new JFXDialogLayout();
                 content.setHeading(new Text("Your Name and Message Too Long!"));
                 content.setBody(new Text("The max name length is 12 characters and the max message length is 100 characters, please shorten them and try again."));
-                JFXDialog errorMessage = new JFXDialog(stackPane,content, JFXDialog.DialogTransition.CENTER);
-                JFXButton button =  new JFXButton("Okay");
+                JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+                JFXButton button = new JFXButton("Okay");
                 button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -195,20 +189,20 @@ public class HomeController implements Initializable {
                 content.setActions(button);
                 if (!opened) {
                     errorMessage.show();
-                    stackPane.setEffect(blur);
+                    anchorPane.setEffect(blur);
                     opened = true;
                 }
                 errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-                    stackPane.setEffect(null);
+                    anchorPane.setEffect(null);
                     opened = false;
                 });
-            } else if (writePostController.name.length() > 12){
-                BoxBlur blur = new BoxBlur(3,3,3);
+            } else if (writePostController.name.length() > 12) {
+                BoxBlur blur = new BoxBlur(2, 2, 2);
                 JFXDialogLayout content = new JFXDialogLayout();
                 content.setHeading(new Text("Your Name is Too Long!"));
                 content.setBody(new Text("The max name length is 12 characters, please shorten it and try again."));
-                JFXDialog errorMessage = new JFXDialog(stackPane,content, JFXDialog.DialogTransition.CENTER);
-                JFXButton button =  new JFXButton("Okay");
+                JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+                JFXButton button = new JFXButton("Okay");
                 button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -218,20 +212,20 @@ public class HomeController implements Initializable {
                 content.setActions(button);
                 if (!opened) {
                     errorMessage.show();
-                    stackPane.setEffect(blur);
+                    anchorPane.setEffect(blur);
                     opened = true;
                 }
                 errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-                    stackPane.setEffect(null);
+                    anchorPane.setEffect(null);
                     opened = false;
                 });
-            } else if (writePostController.message.length() > 100){
-                BoxBlur blur = new BoxBlur(3,3,3);
+            } else if (writePostController.message.length() > 100) {
+                BoxBlur blur = new BoxBlur(2, 2, 2);
                 JFXDialogLayout content = new JFXDialogLayout();
                 content.setHeading(new Text("Your Message is Too Long!"));
                 content.setBody(new Text("The max message length is 100 characters, please shorten it and try again."));
-                JFXDialog errorMessage = new JFXDialog(stackPane,content, JFXDialog.DialogTransition.CENTER);
-                JFXButton button =  new JFXButton("Okay");
+                JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+                JFXButton button = new JFXButton("Okay");
                 button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -241,11 +235,11 @@ public class HomeController implements Initializable {
                 content.setActions(button);
                 if (!opened) {
                     errorMessage.show();
-                    stackPane.setEffect(blur);
+                    anchorPane.setEffect(blur);
                     opened = true;
                 }
                 errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-                    stackPane.setEffect(null);
+                    anchorPane.setEffect(null);
                     opened = false;
                 });
             } else {
@@ -289,11 +283,12 @@ public class HomeController implements Initializable {
 
     }
 
-    public StackPane createPost(String name, String message){
+
+    public StackPane createPost(String name, String message) {
         StackPane messageBody = new StackPane();
-        messageBody.setPrefSize(400,75);
-        messageBody.setMinSize(USE_PREF_SIZE,USE_PREF_SIZE);
-        messageBody.setMaxSize(USE_PREF_SIZE,USE_PREF_SIZE);
+        messageBody.setPrefSize(400, 75);
+        messageBody.setMinSize(USE_PREF_SIZE, USE_PREF_SIZE);
+        messageBody.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
         messageBody.setStyle("-fx-background-color: #ecf0f1; -fx-background-radius: 100; -fx-border-color: #7bed9f; -fx-border-radius: 100; -fx-border-width: 3;");
 
         DropShadow messageDropShadow = new DropShadow();
@@ -304,7 +299,7 @@ public class HomeController implements Initializable {
         messageDropShadow.setRadius(50);
         messageDropShadow.setHeight(100);
         messageDropShadow.setSpread(0);
-        messageDropShadow.setColor(new Color(0,0,0,0.25));
+        messageDropShadow.setColor(new Color(0, 0, 0, 0.25));
         messageBody.setEffect(messageDropShadow);
 
         HBox messageHBox = new HBox();
@@ -312,12 +307,12 @@ public class HomeController implements Initializable {
         messageHBox.setStyle("-fx-spacing: 20; -fx-padding: 20 20 20 20;");
 
         Text nameText = new Text(name + " says:");
-        nameText.setFont(Font.font ("Helvetica Neue Bold", 15));
+        nameText.setFont(Font.font("Helvetica Neue Bold", 15));
         nameText.setStyle("-fx-fill: #2d3436;");
         nameText.setWrappingWidth(80);
 
         Text messageText = new Text(message);
-        messageText.setFont(Font.font ("Helvetica Neue Medium", 13));
+        messageText.setFont(Font.font("Helvetica Neue Medium", 13));
         messageText.setStyle("-fx-fill: #2d3436;");
         messageText.setWrappingWidth(240);
 
@@ -329,6 +324,7 @@ public class HomeController implements Initializable {
 
     }
 
+
     public void changeScrollPaneHeight(double height) {
         KeyValue keyValue = new KeyValue(scrollPaneLocation, height);
         KeyFrame keyFrame = new KeyFrame(Duration.millis(500), keyValue);
@@ -336,9 +332,11 @@ public class HomeController implements Initializable {
         timeline.play();
     }
 
+
     private double getScrollPaneLocation() {
         return scrollPaneLocation.get();
     }
+
 
     private void updateScrollPaneAnchors() {
         setTopAnchor(scrollPane, 65 + getScrollPaneLocation());

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXDrawer?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -60,14 +62,25 @@
                      <children>
                         <FontAwesomeIconView fill="#2d3436" glyphName="EDIT" size="20" StackPane.alignment="CENTER" />
                      </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </StackPane>
                   <StackPane fx:id="refreshButton" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #27ae60; -fx-background-radius: 1000;" GridPane.columnIndex="2">
                      <children>
                         <FontAwesomeIconView fill="#2d3436" glyphName="REFRESH" size="20" StackPane.alignment="CENTER" />
                      </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </StackPane>
                </children>
             </GridPane>
+            <StackPane fx:id="spinnerStackPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <JFXSpinner fx:id="spinner" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="75.0" stylesheets="@spinner.css" />
+               </children>
+            </StackPane>
          </children>
       </AnchorPane>
    </children>

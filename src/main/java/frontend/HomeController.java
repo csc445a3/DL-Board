@@ -8,11 +8,13 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -61,13 +63,28 @@ public class HomeController implements Initializable {
     private StackPane refreshButton;
     @FXML
     public JFXDrawer writePostDrawer;
+    @FXML
+    private StackPane spinnerStackPane;
 
     private DoubleProperty scrollPaneLocation = new SimpleDoubleProperty(this, "scrollPaneLocation");
     private WritePostController writePostController;
     static Stage primaryStage;
+    private ResourceLoadingTask refresh = new ResourceLoadingTask();
+
 
     static public void setStage(Stage stage){
         primaryStage = stage;
+    }
+
+    public class ResourceLoadingTask extends Task<Void> {
+        @Override
+        protected Void call() throws Exception {
+            spinnerStackPane.setVisible(true);
+            //Do Refresh stuff here:
+
+
+            return null;
+        }
     }
 
     @Override
@@ -162,6 +179,16 @@ public class HomeController implements Initializable {
                 }
             }, 500, TimeUnit.MILLISECONDS);
             executor.shutdown();
+
+
+            refreshButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e2) -> {
+                Thread t = new Thread(refresh);
+                refresh.setOnSucceeded(e3 -> {
+                    spinnerStackPane.setVisible(false);
+                });
+                t.start();
+
+            });
 
             //Do the client creation and message sending here:
             try{

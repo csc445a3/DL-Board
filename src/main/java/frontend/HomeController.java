@@ -260,7 +260,7 @@ public class HomeController implements Initializable {
                     clientMessage = writePostController.message.getBytes();
                     Client c = new Client();
                     c.sendMessage(clientMessage, writePostController.name);
-                    bodyVBox.getChildren().add(createPost(writePostController.name, writePostController.message));
+                    c.recieve();
 
                 } catch (Exception err) {
                     err.printStackTrace();

@@ -29,7 +29,7 @@ public class Client {
     static InetAddress ip = null;
     static private PrivateKey privateKey;
     static private PublicKey publicKey;
-    static private ArrayList<MessagePacket> messages;
+    static private ArrayList<MessagePacket> messages = new ArrayList<>();
 
     public Client() throws NoSuchAlgorithmException {
         try {
@@ -147,7 +147,7 @@ public class Client {
 
     }
 
-    public static void recieve() throws Exception {
+    public static MessagePacket recieve() throws Exception {
         try {
 
             byte[] buf = new byte[64000];
@@ -155,7 +155,8 @@ public class Client {
                     = new DatagramPacket(buf, buf.length);
 
             ms.receive(incomingPacket);
-            processPacket(incomingPacket);
+            MessagePacket p = processPacket(incomingPacket);
+            return p;
             //decrypt message
 //            byte[] recievedMessage = decrypt(publicKey, incomingPacket.getData());
 //
@@ -164,9 +165,10 @@ public class Client {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+        return null;
 
     }
-    public static void processPacket(DatagramPacket p) throws Exception {
+    public static MessagePacket processPacket(DatagramPacket p) throws Exception {
         //decrypt data using RSA
         byte[] incomingBytes = p.getData();
         //incomingBytes = decrypt(privateKey, incomingBytes);
@@ -176,6 +178,7 @@ public class Client {
 
         if (opcode[0] == 0 && opcode[1] == 1) {
                 //do nothing , request to server
+                
 
         } else if (opcode[0] == 0 && opcode[1] == 2) {
            helper(incomingBytes);
@@ -201,18 +204,20 @@ public class Client {
             for(String s: split)
             {
                 byte [] ineffecient = s.getBytes();
-                helper(ineffecient);
+                MessagePacket mp = helper(ineffecient);
+                return mp;
             }
-
+            return null;
 
 
         }
 
         //Do nothing if opcode is something else
         //probably should never be anything else
+        return null;
     }
 
-    public static void helper(byte []mp)
+    public static MessagePacket helper(byte []mp)
     {
         byte[] clientID = Arrays.copyOfRange(mp, 2, 14);
         String id = new String(clientID);
@@ -224,7 +229,8 @@ public class Client {
 
         //Create the message packet
         MessagePacket p = new MessagePacket(id.getBytes(), clientMSG, stringTime, mp.length);
-        specialAdd(p);
+        return p;
+       // specialAdd(p);
 
 
     }
@@ -240,6 +246,7 @@ public static void specialAdd(MessagePacket mp)
 
     }
 }
+
 
 
 //    public static void recieveUpdate() {

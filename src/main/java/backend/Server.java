@@ -14,7 +14,9 @@ import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.crypto.Cipher;
 
 /**
@@ -91,15 +93,16 @@ public class Server {
     //takes ip to send to specific client
     public static void sendUpdate(InetAddress ip) throws Exception {
         try {
-            
-            Set messageSet = getAllMessages("users");
-            MessagePacket[] messages = (MessagePacket[]) messageSet.toArray();
-            
-            
-            UpdatePacket updMsg = new UpdatePacket(messages.length, messages);
+
+            List<MessagePacket>messageList = getAllMessages("users");
+            MessagePacket[] m = new MessagePacket[messageList.size()];
+            for(int i = 0; i < messageList.size(); i++){
+                m[i] = messageList.get(i);
+            }
+            UpdatePacket updMsg = new UpdatePacket(messageList.size(), m);
 
             //encrypt the message using RSA
-            byte[] updateMsg = encrypt(privateKey, updMsg.getSendMessage());
+            byte[] updateMsg = updMsg.getSendMessage();
 
             DatagramPacket outgoingPacket
                     = new DatagramPacket(updateMsg, updateMsg.length, ip, port);
@@ -116,14 +119,15 @@ public class Server {
     public static void sendUpdateAll() throws Exception {
         try {
             
-            Set messageSet = getAllMessages("users");
-            MessagePacket[] messages = (MessagePacket[]) messageSet.toArray();
-            
-            
-            UpdatePacket updMsg = new UpdatePacket(messages.length, messages);
+            List<MessagePacket>messageList = getAllMessages("users");
+            MessagePacket[] m = new MessagePacket[messageList.size()];
+            for(int i = 0; i < messageList.size(); i++){
+                m[i] = messageList.get(i);
+            }
+            UpdatePacket updMsg = new UpdatePacket(messageList.size(), m);
 
             //encrypt the message using RSA
-            byte[] updateMsg = encrypt(privateKey, updMsg.getSendMessage());
+            byte[] updateMsg = updMsg.getSendMessage();
 
             DatagramPacket outgoingPacket
                     = new DatagramPacket(updateMsg, updateMsg.length, group, port);
@@ -142,7 +146,7 @@ public class Server {
     public static DatagramPacket recieve() throws Exception {
         try {
 
-            byte[] buf = new byte[64000];
+            byte[] buf = new byte[128];
             DatagramPacket incomingPacket
                     = new DatagramPacket(buf, buf.length);
 
@@ -166,10 +170,10 @@ public class Server {
     public static void processPacket(DatagramPacket p) throws Exception {
         //decrypt data using RSA
         byte[] incomingBytes = p.getData();
-        incomingBytes = decrypt(publicKey, incomingBytes);
+        //incomingBytes = decrypt(publicKey, incomingBytes);
 
         //take the first two bytes of the incoming packet, which should be the opcode
-        byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 1);
+        byte[] opcode = Arrays.copyOfRange(incomingBytes, 0, 2);
 
         if (opcode[0] == 0 && opcode[1] == 1) {
             //this is the opcode for
@@ -248,8 +252,8 @@ public class Server {
         return c.doFinal(encrypted);
     }
 
-    public static Set getAllMessages(String pathname){
-        Set messageList = new HashSet();
+    public static List<MessagePacket> getAllMessages(String pathname){
+        List messageList = null;
         File dir = new File(pathname);
         System.out.println(dir.toPath().toString());
         for(File f : dir.listFiles()){

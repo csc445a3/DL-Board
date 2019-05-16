@@ -147,7 +147,7 @@ public class Client {
 
     }
 
-    public static MessagePacket recieve() throws Exception {
+    public static void recieve() throws Exception {
         try {
 
             byte[] buf = new byte[64000];
@@ -155,8 +155,8 @@ public class Client {
                     = new DatagramPacket(buf, buf.length);
 
             ms.receive(incomingPacket);
-            MessagePacket p = processPacket(incomingPacket);
-            return p;
+            processPacket(incomingPacket);
+            
             //decrypt message
 //            byte[] recievedMessage = decrypt(publicKey, incomingPacket.getData());
 //
@@ -165,10 +165,10 @@ public class Client {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        return null;
+        
 
     }
-    public static MessagePacket processPacket(DatagramPacket p) throws Exception {
+    public static void processPacket(DatagramPacket p) throws Exception {
         //decrypt data using RSA
         byte[] incomingBytes = p.getData();
         //incomingBytes = decrypt(privateKey, incomingBytes);
@@ -204,17 +204,17 @@ public class Client {
             for(String s: split)
             {
                 byte [] ineffecient = s.getBytes();
-                MessagePacket mp = helper(ineffecient);
-                return mp;
+                messages.add(helper(ineffecient));
+                
             }
-            return null;
+            
 
 
         }
 
         //Do nothing if opcode is something else
         //probably should never be anything else
-        return null;
+        
     }
 
     public static MessagePacket helper(byte []mp)
@@ -304,4 +304,9 @@ public static void specialAdd(MessagePacket mp)
         return c.doFinal(encrypted);
     }
 
+    
+    public static List getMessagePacket(){
+        return messages;
+    }
+    
 }

@@ -26,7 +26,7 @@
                 <version>8.8.3</version>
                 <configuration>
                     <vendor>DouglasMyrdek</vendor>
-                    <mainClass>backend.Main</mainClass>
+                    <mainClass>frontend.Main</mainClass>
                     <deployDir>${project.basedir}/src/main/deploy</deployDir>
                     <verbose>true</verbose><!-- always a good idea to have this set to true while debugging -->
                     <appName>DL-Board</appName>

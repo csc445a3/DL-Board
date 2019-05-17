@@ -124,7 +124,7 @@ public class HomeController implements Initializable {
             opened = false;
         });
 
-        Client c = new Client();
+        Client c = new Client(getPassword());
         try {
             c.connect("239.0.0.193");
         }catch(Exception e){

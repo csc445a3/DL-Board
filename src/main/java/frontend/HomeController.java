@@ -286,12 +286,14 @@ public class HomeController implements Initializable {
 
         Task task = new Task<Void>() {
             @Override public Void call() {
-                try {
-                    MessagePacket mp = c.receive();
-                    Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
-                    //bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
-                } catch (Exception err) {
-                    err.printStackTrace();
+                while(true) {
+                    try {
+                        MessagePacket mp = c.receive();
+                        Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
+                        //bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
+                    } catch (Exception err) {
+                        err.printStackTrace();
+                    }
                 }
                 return null;
             }

@@ -2,7 +2,6 @@ package frontend;
 
 import backend.Client;
 import backend.MessagePacket;
-import backend.Server;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -257,10 +256,10 @@ public class HomeController implements Initializable {
 
                 //Do the client creation and message sending here:
                 try {
-                    byte[] clientMessage = new byte[128];
-                    clientMessage = writePostController.message.getBytes();
+
+                    String clientMessage = writePostController.message;
                     Client c = new Client();
-                    c.sendMessage(clientMessage, writePostController.name);
+                    c.send(clientMessage, writePostController.name);
                     Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
 
                         private int i = 1;
@@ -268,13 +267,8 @@ public class HomeController implements Initializable {
                         @Override
                         public void handle(ActionEvent event) {
                             try {
-                                c.recieve();
-                                ArrayList<MessagePacket> messagePackets = c.getMessagePackets();
-                                System.out.println(messagePackets.size());
-                                for (MessagePacket m : messagePackets) {
-                                    System.out.println(m.getID());
-                                    Platform.runLater(() -> bodyVBox.getChildren().add(createPost(m.getID(), m.getMsgString())));
-                                }
+                                MessagePacket messagePacket = c.receive();
+                                Platform.runLater(() -> bodyVBox.getChildren().add(createPost(messagePacket.getId(), messagePacket.getMessage())));
                             } catch (Exception err) {
                                 err.printStackTrace();
                             }

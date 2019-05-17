@@ -1,100 +1,70 @@
 package backend;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
-//This packet is meant for the client and server
-//it will hold the foramtting for message packets
-//and allow information to be accessed easily
 public class MessagePacket {
-    //
-    //OPCODES
-    //MESSAGE = 02
-    //
-    //Format
-    //Message Packet
-    //opcode + ID + Time + Message
 
-    public String userID;
-    public String messageString;
-    public String sendMsgString;
-    public LocalDateTime time;
-    public byte[] messageBytes;
-    public byte[] idBytes = new byte[12];
-    public byte[] timeBytes = new byte[23];
-    public byte[] temp;
-    public byte[] sendMsg;
+    private static final int PACKET_SIZE = 128;
 
-    public MessagePacket(byte [] id, byte[] msg, String t, int packetSize) {
-        
-        sendMsg = new byte[packetSize];
-        messageBytes = msg;
-        messageString = new String(messageBytes);
+    public String getId() {
+        return id;
+    }
 
-        timeBytes = t.getBytes();
-        byte [] opcode = {0,2};
-        ByteBuffer bb = ByteBuffer.allocate(packetSize);
-        bb.put(opcode);
-        System.arraycopy(id, 0, idBytes, 0, id.length);//Arrays.copyOfRange(id.getBytes(), 2, 14);
-        userID = new String(idBytes);
-        
-        //System.out.println(new String(idBytes));
-        bb.put(idBytes);
-        bb.put(timeBytes);
-       // msg.trim();
-        bb.put(msg);
-        
+    public void setId(String id) {
+        this.id = id;
+    }
 
-//        try {
-            //concatenate byte arrays to create outgoing message
-            //which will be in our format
-//            ByteArrayOutputStream os = new ByteArrayOutputStream();
-//            os.write(opCode);
-//            os.write(idBytes);
-//            os.write(timeBytes);
-//            os.write(messageBytes);
-//            
+    private String id;
 
-            //this will be the message we send out
-            //fully formatted
-      //      temp = os.toByteArray();
-            
-            sendMsg = bb.array();
-            
-            
-            sendMsgString = new String(sendMsg);
+    public String getMessage() {
+        return message;
+    }
 
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//        }
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String message;
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    private String timeStamp;
+
+    public MessagePacket(String id, String timeStamp, String message){
+
+        this.id = id;
+        this.timeStamp = timeStamp;
+        this.message = message;
 
     }
 
-    public byte[] getOriginalMsgBytes() {
-        return this.messageBytes;
+    public byte[] createBytes(){
+
+        //Create a buffer
+        ByteBuffer buffer = ByteBuffer.allocate(PACKET_SIZE);
+
+        //Fill the id
+        byte[]idBytes = new byte[12];
+        System.arraycopy(id.getBytes(), 0, idBytes, 0, id.length());
+
+        //Fill the timeStamp
+        byte[]time = new byte[24];
+        System.arraycopy(timeStamp.getBytes(), 0, time, 0, timeStamp.length());
+
+        //Fill the message
+        buffer.put(idBytes);
+        buffer.put(time);
+        buffer.put(message.getBytes());
+
+        return buffer.array();
+
     }
 
-    public byte[] getSendMessage() {
-        return this.sendMsg;
-    }
-
-    public String getID() {
-        return this.userID;
-    }
-
-    public String getMsgString() {
-        return this.messageString;
-    }
-
-    public int getMsgLength() {
-        return messageString.length();
-    }
-
-    public int getSendMsgLength() {
-        return sendMsgString.length();
-    }
 
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="writePostAnchorPane" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="90.0" prefWidth="1000.0" style="-fx-background-color: #2ecc71;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.WritePostController">
+   <children>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="1000.0" style="-fx-background-color: #ecf0f1; -fx-border-color: #7bed9f; -fx-border-width: 3; -fx-background-radius: 0 0 100 100; -fx-border-radius: 0 0 100 100;">
+         <effect>
+            <DropShadow color="#00000032" height="58.4" radius="14.1" spread="0.5" width="0.0" />
+         </effect>
+      </AnchorPane>
+      <HBox alignment="CENTER" prefHeight="90.0" prefWidth="1000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <ScrollPane fitToHeight="true" stylesheets="@dl-board.css" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+               <content>
+                  <HBox fx:id="filterHbox" alignment="CENTER" fillHeight="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="75.0" style="-fx-spacing: 10;">
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
+                     <children>
+                        <JFXTextField fx:id="nameField" focusColor="#3c8652" labelFloat="true" prefHeight="40.0" prefWidth="170.0" promptText="Name" style="-fx-background-color: #ecf0f1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;" text="Anon" unFocusColor="#4d4d4d00">
+                           <effect>
+                              <DropShadow color="#0000004d" spread="0.25" />
+                           </effect>
+                           <font>
+                              <Font name="Helvetica Neue Medium" size="14.0" />
+                           </font>
+                        </JFXTextField>
+                        <JFXTextField fx:id="messageField" focusColor="#3c8652" labelFloat="true" maxWidth="1.7976931348623157E308" prefHeight="40.0" prefWidth="650.0" promptText="Post" style="-fx-background-color: #ecf0f1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;" text=" " unFocusColor="#7bed9f00">
+                           <effect>
+                              <DropShadow color="#0000004d" spread="0.25" />
+                           </effect>
+                           <font>
+                              <Font name="Helvetica Neue Medium" size="14.0" />
+                           </font>
+                        </JFXTextField>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="10.0" left="50.0" right="10.0" top="20.0" />
+                     </padding>
+                  </HBox>
+               </content>
+            </ScrollPane>
+            <JFXButton fx:id="postButton" buttonType="RAISED" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="72.0" ripplerFill="#7bed9f" style="-fx-background-color: #e5e9ea; -fx-padding: 5; -fx-background-radius: 25; -fx-border-color: #d4d7d8; -fx-border-radius: 25;" text="Post" textFill="#2d3436">
+               <HBox.margin>
+                  <Insets right="35.0" />
+               </HBox.margin>
+            </JFXButton>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

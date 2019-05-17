@@ -6,7 +6,7 @@ public class tester {
 
     public static void main(String args[]) {
 
-        Client c = new Client();
+        Client c = null;
 
             try {
                 c.connect("239.0.0.193");

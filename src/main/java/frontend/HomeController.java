@@ -95,7 +95,13 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         Client c = new Client();
+        try {
+            c.connect("239.0.0.193");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -282,8 +288,8 @@ public class HomeController implements Initializable {
             @Override public Void call() {
                 try {
                     MessagePacket mp = c.receive();
-                    //Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
-                    bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
+                    Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
+                    //bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
                 } catch (Exception err) {
                     err.printStackTrace();
                 }

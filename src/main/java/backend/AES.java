@@ -12,6 +12,7 @@ public class AES {
 
     private SecretKeySpec secretKey;
 
+
     private void setKey(byte[] pass){
         secretKey = new SecretKeySpec(pass, ENCRYPTION);
     }

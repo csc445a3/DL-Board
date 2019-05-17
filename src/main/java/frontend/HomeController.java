@@ -2,10 +2,7 @@ package frontend;
 
 import backend.Client;
 import backend.MessagePacket;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.events.JFXDialogEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -76,7 +73,14 @@ public class HomeController implements Initializable {
     private WritePostController writePostController;
     private static Stage primaryStage;
     private ResourceLoadingTask refresh = new ResourceLoadingTask();
+    private Task task;
     private boolean opened = false;
+    private String password = "";
+    private Client c;
+
+    public String getPassword() {
+        return password;
+    }
 
     static void setStage(Stage stage) {
         primaryStage = stage;
@@ -95,13 +99,42 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        Client c = new Client();
-        try {
-            c.connect("239.0.0.193");
-        }catch(Exception e){
-            e.printStackTrace();
+        BoxBlur blur2 = new BoxBlur(2, 2, 2);
+        JFXDialogLayout passwordContent = new JFXDialogLayout();
+        passwordContent.setHeading(new Text("Please enter the password"));
+        passwordContent.setBody(new Text("The max name length is 12 characters, please shorten it and try again."));
+        JFXDialog passwordMessage = new JFXDialog(stackPane, passwordContent, JFXDialog.DialogTransition.CENTER);
+        JFXTextField passwordField = new JFXTextField();
+        passwordField.setPromptText("Enter Password Here");
+        JFXButton passwordButton = new JFXButton("Okay");
+        passwordButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                password = passwordField.getText();
+                passwordMessage.close();
+                System.out.println("password: " + getPassword());
+                c = new Client(getPassword());
+                try {
+                    c.connect("239.0.0.193");
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                new Thread(task).start();
+            }
+        });
+        passwordContent.getChildren().add(passwordField);
+        passwordContent.setActions(passwordButton);
+        if (!opened) {
+            passwordMessage.show();
+            anchorPane.setEffect(blur2);
+            opened = true;
         }
+        passwordMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
+            anchorPane.setEffect(null);
+            opened = false;
+
+        });
+
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -171,6 +204,7 @@ public class HomeController implements Initializable {
                 }, 500, TimeUnit.MILLISECONDS);
                 executor.shutdown();
             } else {
+
                 writePostDrawer.setVisible(true);
                 writePostDrawer.open();
                 changeScrollPaneHeight(65);
@@ -284,7 +318,7 @@ public class HomeController implements Initializable {
 
         });
 
-        Task task = new Task<Void>() {
+        task = new Task<Void>() {
             @Override public Void call() {
                 while(true) {
                     try {
@@ -299,7 +333,6 @@ public class HomeController implements Initializable {
                 return null;
             }
         };
-        new Thread(task).start();
 
         //Adding a Test Message
         //bodyVBox.getChildren().add(createPost("Doug", "Hello"));

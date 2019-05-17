@@ -36,6 +36,13 @@ public class MessagePacket {
 
     private String timeStamp;
 
+    /**
+     * Assigns local variables
+     * @param id id of the user from GUI.
+     * @param timeStamp timeStamp of the message String representation
+     *                  of LocalDateTime object.
+     * @param message message content from GUI.
+     */
     public MessagePacket(String id, String timeStamp, String message){
 
         this.id = id;
@@ -44,6 +51,12 @@ public class MessagePacket {
 
     }
 
+    /**
+     * Creates a byte array based off the local variables of
+     * id, timeStamp, and message.
+     * @return returns a byte array for the client
+     * to send or encrypt.
+     */
     public byte[] createBytes(){
 
         //Create a buffer

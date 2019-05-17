@@ -41,6 +41,11 @@ import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import java.util.*;
 import javafx.animation.Timeline;
 
+/**
+ * All methods for the gui. Creates the buttons and instances of clicking, and such
+ * Creates a client once password is entered. Creates two threads one to send packets, and
+ * the other to listen for packets.
+ */
 public class HomeController implements Initializable {
 
     @FXML

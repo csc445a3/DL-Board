@@ -6,19 +6,24 @@ import java.nio.ByteBuffer;
 
 public class AES {
 
+    //Static variables that do not change.
     private static final String ENCRYPTION = "AES";
     private static final String CIPHER = "AES/ECB/PKCS5Padding";
     private static final int PASS_SIZE = 16;
 
+    //Private key for encryption/decryption
     private SecretKeySpec secretKey;
 
-
+    /**
+     * Stores the secret key to a variable
+     * @param pass byte array of the string password.
+     */
     private void setKey(byte[] pass){
         secretKey = new SecretKeySpec(pass, ENCRYPTION);
     }
 
     /**
-     * Ecnrypts a byte under backend.AES
+     * Encrypts a byte under backend.AES
      * @param toEncrypt the byte to be encrypted
      * @return encyrpted bytes
      * @throws Exception cipher init
@@ -37,7 +42,7 @@ public class AES {
     }
 
     /**
-     * Decryptes bytes under backend.AES
+     * Decrypts bytes under backend.AES
      * @param encrypted byte array of encrypted data
      * @return byte array of decrypted data
      * @throws Exception cipher

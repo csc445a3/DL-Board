@@ -2,6 +2,9 @@ package backend;
 
 import java.util.Scanner;
 
+//Class used to test getting multicasting and threading working
+//Not used in the actual program.
+
 public class tester {
 
     public static void main(String args[]) {

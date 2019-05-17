@@ -12,6 +12,11 @@ import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
+    /**
+     * Starts an instance of the GUI
+     * @param primaryStage stage for the GUI to runn off of
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         HomeController.setStage(primaryStage);
@@ -25,6 +30,10 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Launches GUI
+     * @param args command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

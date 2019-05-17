@@ -256,13 +256,15 @@ public class HomeController implements Initializable {
                 executor.shutdown();
 
                 //Do the client creation and message sending here:
-                try {
-
-                    c.send(writePostController.name, writePostController.message);
-
-                } catch (Exception err) {
-                    err.printStackTrace();
-                }
+                Platform.runLater(new Runnable() {
+                    @Override public void run() {
+                        try {
+                            c.send(writePostController.name,writePostController.message);
+                        } catch (Exception err) {
+                            err.printStackTrace();
+                        }
+                    }
+                });
             }
 
         });
@@ -276,21 +278,19 @@ public class HomeController implements Initializable {
 
         });
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
+        Task task = new Task<Void>() {
+            @Override public Void call() {
                 try {
                     MessagePacket mp = c.receive();
-                    Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
+                    //Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
+                    bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
                 } catch (Exception err) {
                     err.printStackTrace();
                 }
+                return null;
             }
-
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        };
+        new Thread(task).start();
 
         //Adding a Test Message
         //bodyVBox.getChildren().add(createPost("Doug", "Hello"));

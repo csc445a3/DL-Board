@@ -38,8 +38,6 @@ public class tester {
                     while(true){
                     try {
                         MessagePacket mp = c.receive();
-                        System.out.println("ID: " + mp.getId().trim() + ", TimeStamp: " + mp.getTimeStamp() + ", Message: " + mp.getMessage().trim());
-
                     }catch(Exception e){
                         e.printStackTrace();
                     }

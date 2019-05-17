@@ -1,36 +1,56 @@
 package backend;
 
-import DataStorage.User;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.Scanner;
 
 public class tester {
 
-    public static void main(String[] args){
+    public static void main(String args[]) {
 
-        User u = new User("jtrynisk");
-        //u.put("Hello", "jtrynisk");
-        //u.put("World", "jtrynisk");
-        //u.put("Testing this", "jtrynisk");
+        Client c = new Client();
 
-        try{
+            try {
+                c.connect("239.0.0.193");
+             
+                
+                
+                Thread sender = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true){
+                    try {
+                        Scanner sc = new Scanner(System.in);
+                System.out.print("Please enter and id: ");
+                String id = sc.nextLine();
+                System.out.print("Please enter a message: ");
+                String message = sc.nextLine();
+                c.send(id, message);
 
-            Server s = new Server();
-            File temp = new File("users");
-            System.out.println(temp.getPath());
-            List<MessagePacket> messages = s.getAllMessages(temp.getPath());
-            Iterator iter = messages.iterator();
-            while(iter.hasNext()){
-                System.out.println(iter.next());
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    }
+                }
+            });
+
+            Thread listener = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true){
+                    try {
+                        MessagePacket mp = c.receive();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    }
+                }
+            });
+            sender.start();
+            listener.start();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch(Exception e){
-            e.printStackTrace();
         }
-
     }
 
-}
+

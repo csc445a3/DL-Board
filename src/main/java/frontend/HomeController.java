@@ -136,7 +136,7 @@ public class HomeController implements Initializable {
         Thread t = new Thread(passwordTask);
 
         passwordTask.setOnSucceeded(e4 -> {
-            Client c = new Client();
+            Client c = new Client(getPassword());
             try {
                 c.connect("239.0.0.193");
             }catch(Exception e){

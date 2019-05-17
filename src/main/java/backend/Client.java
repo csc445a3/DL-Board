@@ -19,10 +19,11 @@ public class Client {
     InetAddress group;
     HashMap<String, MessagePacket> messages = new HashMap<String, MessagePacket>();
     AES aes;
+    String password;
 
 
-    public Client() {
-
+    public Client(String password) {
+        this.password = password;
 
         try {
             aes = new AES();
@@ -51,7 +52,7 @@ public class Client {
         LocalDateTime now = LocalDateTime.now();
         String timeStamp = now.toString();
         MessagePacket messagePacket = new MessagePacket(id, timeStamp, message);
-        byte[] encyrptedData = aes.encrypt(messagePacket.createBytes(), "PasswordPassword".getBytes());
+        byte[] encyrptedData = aes.encrypt(messagePacket.createBytes(), password.getBytes());
         DatagramPacket outPacket = new DatagramPacket(encyrptedData, encyrptedData.length, group, PORT);
 
 
@@ -65,7 +66,7 @@ public class Client {
         DatagramPacket inPacket = new DatagramPacket(new byte[ENCRYPTED_SIZE], ENCRYPTED_SIZE);
         socket.receive(inPacket);
         byte[] data = new byte[PACKET_SIZE];
-        ByteBuffer bb = ByteBuffer.wrap(aes.decrypt(inPacket.getData(), "PasswordPassword".getBytes()));
+        ByteBuffer bb = ByteBuffer.wrap(aes.decrypt(inPacket.getData(), password.getBytes()));
         bb.get(data);
 
         byte[] id = new byte[12];

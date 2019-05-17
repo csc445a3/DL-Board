@@ -293,6 +293,7 @@ public class HomeController implements Initializable {
                         //bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
                     } catch (Exception err) {
                         err.printStackTrace();
+                        break;
                     }
                 }
                 return null;

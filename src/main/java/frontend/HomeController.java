@@ -95,6 +95,7 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Client c = new Client();
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -257,26 +258,7 @@ public class HomeController implements Initializable {
                 //Do the client creation and message sending here:
                 try {
 
-                    String clientMessage = writePostController.message;
-                    Client c = new Client();
-                    c.send(clientMessage, writePostController.name);
-                    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
-
-                        private int i = 1;
-
-                        @Override
-                        public void handle(ActionEvent event) {
-                            try {
-                                MessagePacket messagePacket = c.receive();
-                                Platform.runLater(() -> bodyVBox.getChildren().add(createPost(messagePacket.getId(), messagePacket.getMessage())));
-                            } catch (Exception err) {
-                                err.printStackTrace();
-                            }
-                        }
-
-                    }));
-                    timeline.setCycleCount(Timeline.INDEFINITE);
-                    timeline.play();
+                    c.send(writePostController.name, writePostController.message);
 
                 } catch (Exception err) {
                     err.printStackTrace();
@@ -293,6 +275,22 @@ public class HomeController implements Initializable {
             t.start();
 
         });
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    MessagePacket mp = c.receive();
+                    Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            }
+
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
 
         //Adding a Test Message
         //bodyVBox.getChildren().add(createPost("Doug", "Hello"));

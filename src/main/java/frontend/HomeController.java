@@ -45,7 +45,6 @@ import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import java.util.*;
 import javafx.animation.Timeline;
 
-
 public class HomeController implements Initializable {
 
     @FXML
@@ -85,11 +84,11 @@ public class HomeController implements Initializable {
     }
 
     public class ResourceLoadingTask extends Task<Void> {
+
         @Override
         protected Void call() throws Exception {
             spinnerStackPane.setVisible(true);
             //Do Refresh stuff here:
-            
 
             return null;
         }
@@ -152,7 +151,6 @@ public class HomeController implements Initializable {
             refreshButton.setStyle("-fx-background-color: #27ae60; -fx-background-radius: 1000;");
         });
 
-
         //Open write post drawer
         writePostButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
             if (writePostDrawer.isOpened()) {
@@ -172,7 +170,6 @@ public class HomeController implements Initializable {
                 changeScrollPaneHeight(65);
             }
         });
-
 
         writePostController.postButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
             writePostController.name = writePostController.nameField.getText();
@@ -264,26 +261,25 @@ public class HomeController implements Initializable {
                     clientMessage = writePostController.message.getBytes();
                     Client c = new Client();
                     c.sendMessage(clientMessage, writePostController.name);
-                    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), new EventHandler<ActionEvent>() {
+                    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
 
-                        private int i = 1;    
+                        private int i = 1;
 
                         @Override
                         public void handle(ActionEvent event) {
-                             try {
-                            c.recieve();
-                            ArrayList<MessagePacket> messagePackets = c.getMessagePackets();
-                            System.out.println(messagePackets.size());
-                            for (MessagePacket m : messagePackets){
-                                System.out.println(m.getID());
-                                Platform.runLater(()-> bodyVBox.getChildren().add(createPost(m.getID(), m.getMsgString())));
+                            try {
+                                c.recieve();
+                                ArrayList<MessagePacket> messagePackets = c.getMessagePackets();
+                                System.out.println(messagePackets.size());
+                                for (MessagePacket m : messagePackets) {
+                                    System.out.println(m.getID());
+                                    Platform.runLater(() -> bodyVBox.getChildren().add(createPost(m.getID(), m.getMsgString())));
+                                }
+                            } catch (Exception err) {
+                                err.printStackTrace();
                             }
-                             } catch (Exception err) {
-                    err.printStackTrace();
-                }
                         }
-             
-                             
+
                     }));
                     timeline.setCycleCount(Timeline.INDEFINITE);
                     timeline.play();
@@ -306,9 +302,7 @@ public class HomeController implements Initializable {
 
         //Adding a Test Message
         //bodyVBox.getChildren().add(createPost("Doug", "Hello"));
-
     }
-
 
     public StackPane createPost(String name, String message) {
         StackPane messageBody = new StackPane();
@@ -350,7 +344,6 @@ public class HomeController implements Initializable {
 
     }
 
-
     public void changeScrollPaneHeight(double height) {
         KeyValue keyValue = new KeyValue(scrollPaneLocation, height);
         KeyFrame keyFrame = new KeyFrame(Duration.millis(500), keyValue);
@@ -358,11 +351,9 @@ public class HomeController implements Initializable {
         timeline.play();
     }
 
-
     private double getScrollPaneLocation() {
         return scrollPaneLocation.get();
     }
-
 
     private void updateScrollPaneAnchors() {
         setTopAnchor(scrollPane, 65 + getScrollPaneLocation());

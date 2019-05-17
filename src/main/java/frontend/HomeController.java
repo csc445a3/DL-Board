@@ -73,6 +73,7 @@ public class HomeController implements Initializable {
     private WritePostController writePostController;
     private static Stage primaryStage;
     private ResourceLoadingTask refresh = new ResourceLoadingTask();
+    PasswordResourceLoadingTask passwordTask = new PasswordResourceLoadingTask();
     private boolean opened = false;
     private String password = "";
 
@@ -95,239 +96,252 @@ public class HomeController implements Initializable {
         }
     }
 
+    public class PasswordResourceLoadingTask extends Task<Void> {
+
+        @Override
+        protected Void call() throws Exception {
+            BoxBlur blur2 = new BoxBlur(2, 2, 2);
+            JFXDialogLayout passwordContent = new JFXDialogLayout();
+            passwordContent.setHeading(new Text("Please enter the password"));
+            passwordContent.setBody(new Text("The max name length is 12 characters, please shorten it and try again."));
+            JFXDialog passwordMessage = new JFXDialog(stackPane, passwordContent, JFXDialog.DialogTransition.CENTER);
+            JFXTextField passwordField = new JFXTextField();
+            passwordField.setPromptText("Enter Password Here");
+            JFXButton passwordButton = new JFXButton("Okay");
+            passwordButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    password = passwordField.getText();
+                    passwordMessage.close();
+                }
+            });
+            passwordContent.getChildren().add(passwordField);
+            passwordContent.setActions(passwordButton);
+            if (!opened) {
+                passwordMessage.show();
+                anchorPane.setEffect(blur2);
+                opened = true;
+            }
+            passwordMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
+                anchorPane.setEffect(null);
+                opened = false;
+            });
+
+            return null;
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        BoxBlur blur2 = new BoxBlur(2, 2, 2);
-        JFXDialogLayout passwordContent = new JFXDialogLayout();
-        passwordContent.setHeading(new Text("Please enter the password"));
-        passwordContent.setBody(new Text("The max name length is 12 characters, please shorten it and try again."));
-        JFXDialog passwordMessage = new JFXDialog(stackPane, passwordContent, JFXDialog.DialogTransition.CENTER);
-        JFXTextField passwordField = new JFXTextField();
-        passwordField.setPromptText("Enter Password Here");
-        JFXButton passwordButton = new JFXButton("Okay");
-        passwordButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                passwordMessage.close();
-                password = passwordField.getText();
+        Thread t = new Thread(passwordTask);
+
+        passwordTask.setOnSucceeded(e4 -> {
+            Client c = new Client();
+            try {
+                c.connect("239.0.0.193");
+            }catch(Exception e){
+                e.printStackTrace();
             }
-        });
-        passwordContent.getChildren().add(passwordField);
-        passwordContent.setActions(passwordButton);
-        if (!opened) {
-            passwordMessage.show();
-            anchorPane.setEffect(blur2);
-            opened = true;
-        }
-        passwordMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-            anchorPane.setEffect(null);
-            opened = false;
-        });
 
-        Client c = new Client();
-        try {
-            c.connect("239.0.0.193");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    bodyVBox.getChildren().removeAll();
+                    Platform.exit();
+                    System.exit(0);
+                }
+            });
 
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                bodyVBox.getChildren().removeAll();
-                Platform.exit();
-                System.exit(0);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("writePost.fxml"));
+                AnchorPane writePostPane = loader.load();
+                writePostController = loader.getController();
+                writePostController.writePostAnchorPane.maxWidthProperty().bind(topBarGridPane.widthProperty());
+                writePostDrawer.setSidePane(writePostPane);
+            } catch (IOException ex) {
+                Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("writePost.fxml"));
-            AnchorPane writePostPane = loader.load();
-            writePostController = loader.getController();
-            writePostController.writePostAnchorPane.maxWidthProperty().bind(topBarGridPane.widthProperty());
-            writePostDrawer.setSidePane(writePostPane);
-        } catch (IOException ex) {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            //JavaFX resizing junk:
+            scrollPane.setFitToWidth(true);
+            Platform.runLater(() -> scrollPane.requestLayout());
+            anchorPane.prefWidthProperty().bind(stackPane.widthProperty());
+            anchorPane.prefHeightProperty().bind(stackPane.heightProperty());
+            topBarGridPane.prefWidthProperty().bind(anchorPane.widthProperty());
+            bodyStackPane.prefWidthProperty().bind(anchorPane.widthProperty());
+            bodyVBox.prefHeightProperty().bind(bodyStackPane.heightProperty());
+            centerColumn.maxWidthProperty().bind(topBarGridPane.widthProperty());
+            gridPaneLeft.maxWidthProperty().bind(topBarGridPane.widthProperty());
+            gridPaneRight.maxWidthProperty().bind(topBarGridPane.widthProperty());
+            writePostDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
-        //JavaFX resizing junk:
-        scrollPane.setFitToWidth(true);
-        Platform.runLater(() -> scrollPane.requestLayout());
-        anchorPane.prefWidthProperty().bind(stackPane.widthProperty());
-        anchorPane.prefHeightProperty().bind(stackPane.heightProperty());
-        topBarGridPane.prefWidthProperty().bind(anchorPane.widthProperty());
-        bodyStackPane.prefWidthProperty().bind(anchorPane.widthProperty());
-        bodyVBox.prefHeightProperty().bind(bodyStackPane.heightProperty());
-        centerColumn.maxWidthProperty().bind(topBarGridPane.widthProperty());
-        gridPaneLeft.maxWidthProperty().bind(topBarGridPane.widthProperty());
-        gridPaneRight.maxWidthProperty().bind(topBarGridPane.widthProperty());
-        writePostDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
+            //Resize bodyStackPane when filters bar is opened
+            scrollPaneLocation.addListener(it -> updateScrollPaneAnchors());
 
-        //Resize bodyStackPane when filters bar is opened
-        scrollPaneLocation.addListener(it -> updateScrollPaneAnchors());
+            //Set writePostDrawer invisible at first
+            writePostDrawer.setVisible(false);
 
-        //Set writePostDrawer invisible at first
-        writePostDrawer.setVisible(false);
+            //Change color of write button when highlighted
+            writePostButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (e) -> {
+                writePostButton.setStyle("-fx-background-color: #1e9952; -fx-background-radius: 1000;");
+            });
+            writePostButton.addEventHandler(MouseEvent.MOUSE_EXITED, (e) -> {
+                writePostButton.setStyle("-fx-background-color: #27ae60; -fx-background-radius: 1000;");
+            });
 
-        //Change color of write button when highlighted
-        writePostButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (e) -> {
-            writePostButton.setStyle("-fx-background-color: #1e9952; -fx-background-radius: 1000;");
-        });
-        writePostButton.addEventHandler(MouseEvent.MOUSE_EXITED, (e) -> {
-            writePostButton.setStyle("-fx-background-color: #27ae60; -fx-background-radius: 1000;");
-        });
+            //Change color of refresh button when highlighted
+            refreshButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (e) -> {
+                refreshButton.setStyle("-fx-background-color: #1e9952; -fx-background-radius: 1000;");
+            });
+            refreshButton.addEventHandler(MouseEvent.MOUSE_EXITED, (e) -> {
+                refreshButton.setStyle("-fx-background-color: #27ae60; -fx-background-radius: 1000;");
+            });
 
-        //Change color of refresh button when highlighted
-        refreshButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (e) -> {
-            refreshButton.setStyle("-fx-background-color: #1e9952; -fx-background-radius: 1000;");
-        });
-        refreshButton.addEventHandler(MouseEvent.MOUSE_EXITED, (e) -> {
-            refreshButton.setStyle("-fx-background-color: #27ae60; -fx-background-radius: 1000;");
-        });
-
-        //Open write post drawer
-        writePostButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
-            if (writePostDrawer.isOpened()) {
-                writePostDrawer.close();
-                changeScrollPaneHeight(0);
-                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
-                executor.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        Platform.runLater(() -> writePostDrawer.setVisible(false));
-                    }
-                }, 500, TimeUnit.MILLISECONDS);
-                executor.shutdown();
-            } else {
-                writePostDrawer.setVisible(true);
-                writePostDrawer.open();
-                changeScrollPaneHeight(65);
-            }
-        });
-
-        writePostController.postButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
-            writePostController.name = writePostController.nameField.getText();
-            writePostController.message = writePostController.messageField.getText();
-            if (writePostController.name.length() > 12 && writePostController.message.length() > 100) {
-                BoxBlur blur = new BoxBlur(2, 2, 2);
-                JFXDialogLayout content = new JFXDialogLayout();
-                content.setHeading(new Text("Your Name and Message Too Long!"));
-                content.setBody(new Text("The max name length is 12 characters and the max message length is 100 characters, please shorten them and try again."));
-                JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
-                JFXButton button = new JFXButton("Okay");
-                button.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        errorMessage.close();
-                    }
-                });
-                content.setActions(button);
-                if (!opened) {
-                    errorMessage.show();
-                    anchorPane.setEffect(blur);
-                    opened = true;
+            //Open write post drawer
+            writePostButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+                if (writePostDrawer.isOpened()) {
+                    writePostDrawer.close();
+                    changeScrollPaneHeight(0);
+                    final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+                    executor.schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            Platform.runLater(() -> writePostDrawer.setVisible(false));
+                        }
+                    }, 500, TimeUnit.MILLISECONDS);
+                    executor.shutdown();
+                } else {
+                    writePostDrawer.setVisible(true);
+                    writePostDrawer.open();
+                    changeScrollPaneHeight(65);
                 }
-                errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-                    anchorPane.setEffect(null);
-                    opened = false;
-                });
-            } else if (writePostController.name.length() > 12) {
-                BoxBlur blur = new BoxBlur(2, 2, 2);
-                JFXDialogLayout content = new JFXDialogLayout();
-                content.setHeading(new Text("Your Name is Too Long!"));
-                content.setBody(new Text("The max name length is 12 characters, please shorten it and try again."));
-                JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
-                JFXButton button = new JFXButton("Okay");
-                button.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        errorMessage.close();
-                    }
-                });
-                content.setActions(button);
-                if (!opened) {
-                    errorMessage.show();
-                    anchorPane.setEffect(blur);
-                    opened = true;
-                }
-                errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-                    anchorPane.setEffect(null);
-                    opened = false;
-                });
-            } else if (writePostController.message.length() > 100) {
-                BoxBlur blur = new BoxBlur(2, 2, 2);
-                JFXDialogLayout content = new JFXDialogLayout();
-                content.setHeading(new Text("Your Message is Too Long!"));
-                content.setBody(new Text("The max message length is 100 characters, please shorten it and try again."));
-                JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
-                JFXButton button = new JFXButton("Okay");
-                button.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        errorMessage.close();
-                    }
-                });
-                content.setActions(button);
-                if (!opened) {
-                    errorMessage.show();
-                    anchorPane.setEffect(blur);
-                    opened = true;
-                }
-                errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
-                    anchorPane.setEffect(null);
-                    opened = false;
-                });
-            } else {
-                writePostDrawer.close();
-                changeScrollPaneHeight(0);
-                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
-                executor.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        Platform.runLater(() -> writePostDrawer.setVisible(false));
-                    }
-                }, 500, TimeUnit.MILLISECONDS);
-                executor.shutdown();
+            });
 
-                //Do the client creation and message sending here:
-                Platform.runLater(new Runnable() {
-                    @Override public void run() {
+            writePostController.postButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+                writePostController.name = writePostController.nameField.getText();
+                writePostController.message = writePostController.messageField.getText();
+                if (writePostController.name.length() > 12 && writePostController.message.length() > 100) {
+                    BoxBlur blur = new BoxBlur(2, 2, 2);
+                    JFXDialogLayout content = new JFXDialogLayout();
+                    content.setHeading(new Text("Your Name and Message Too Long!"));
+                    content.setBody(new Text("The max name length is 12 characters and the max message length is 100 characters, please shorten them and try again."));
+                    JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+                    JFXButton button = new JFXButton("Okay");
+                    button.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            errorMessage.close();
+                        }
+                    });
+                    content.setActions(button);
+                    if (!opened) {
+                        errorMessage.show();
+                        anchorPane.setEffect(blur);
+                        opened = true;
+                    }
+                    errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
+                        anchorPane.setEffect(null);
+                        opened = false;
+                    });
+                } else if (writePostController.name.length() > 12) {
+                    BoxBlur blur = new BoxBlur(2, 2, 2);
+                    JFXDialogLayout content = new JFXDialogLayout();
+                    content.setHeading(new Text("Your Name is Too Long!"));
+                    content.setBody(new Text("The max name length is 12 characters, please shorten it and try again."));
+                    JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+                    JFXButton button = new JFXButton("Okay");
+                    button.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            errorMessage.close();
+                        }
+                    });
+                    content.setActions(button);
+                    if (!opened) {
+                        errorMessage.show();
+                        anchorPane.setEffect(blur);
+                        opened = true;
+                    }
+                    errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
+                        anchorPane.setEffect(null);
+                        opened = false;
+                    });
+                } else if (writePostController.message.length() > 100) {
+                    BoxBlur blur = new BoxBlur(2, 2, 2);
+                    JFXDialogLayout content = new JFXDialogLayout();
+                    content.setHeading(new Text("Your Message is Too Long!"));
+                    content.setBody(new Text("The max message length is 100 characters, please shorten it and try again."));
+                    JFXDialog errorMessage = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+                    JFXButton button = new JFXButton("Okay");
+                    button.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            errorMessage.close();
+                        }
+                    });
+                    content.setActions(button);
+                    if (!opened) {
+                        errorMessage.show();
+                        anchorPane.setEffect(blur);
+                        opened = true;
+                    }
+                    errorMessage.setOnDialogClosed((JFXDialogEvent closedEvent) -> {
+                        anchorPane.setEffect(null);
+                        opened = false;
+                    });
+                } else {
+                    writePostDrawer.close();
+                    changeScrollPaneHeight(0);
+                    final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+                    executor.schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            Platform.runLater(() -> writePostDrawer.setVisible(false));
+                        }
+                    }, 500, TimeUnit.MILLISECONDS);
+                    executor.shutdown();
+
+                    //Do the client creation and message sending here:
+                    Platform.runLater(new Runnable() {
+                        @Override public void run() {
+                            try {
+                                c.send(writePostController.name,writePostController.message);
+                            } catch (Exception err) {
+                                err.printStackTrace();
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            refreshButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e2) -> {
+                Thread t = new Thread(refresh);
+                refresh.setOnSucceeded(e3 -> {
+                    spinnerStackPane.setVisible(false);
+                });
+                t.start();
+
+            });
+
+            Task task = new Task<Void>() {
+                @Override public Void call() {
+                    while(true) {
                         try {
-                            c.send(writePostController.name,writePostController.message);
+                            MessagePacket mp = c.receive();
+                            Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
+                            //bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
                         } catch (Exception err) {
                             err.printStackTrace();
+                            break;
                         }
                     }
-                });
-            }
-
-        });
-
-        refreshButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e2) -> {
-            Thread t = new Thread(refresh);
-            refresh.setOnSucceeded(e3 -> {
-                spinnerStackPane.setVisible(false);
-            });
-            t.start();
-
-        });
-
-        Task task = new Task<Void>() {
-            @Override public Void call() {
-                while(true) {
-                    try {
-                        MessagePacket mp = c.receive();
-                        Platform.runLater(() -> bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim())));
-                        //bodyVBox.getChildren().add(createPost(mp.getId().trim(), mp.getMessage().trim()));
-                    } catch (Exception err) {
-                        err.printStackTrace();
-                        break;
-                    }
+                    return null;
                 }
-                return null;
-            }
-        };
-        new Thread(task).start();
+            };
+            new Thread(task).start();
+        });
+        t.start();
 
         //Adding a Test Message
         //bodyVBox.getChildren().add(createPost("Doug", "Hello"));
